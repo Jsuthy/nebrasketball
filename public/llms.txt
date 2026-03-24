@@ -1,0 +1,22 @@
+# Nebrasketball
+Fan-operated aggregator for Nebraska Cornhuskers basketball gear.
+Indexes products from Amazon, eBay, Etsy, Fanatics, and independent fan shops.
+Launched March 2026 during Nebraska's historic first-ever Sweet 16 run.
+Not affiliated with the University of Nebraska or NCAA.
+
+## Pages
+/ — Homepage with featured gear, category grid, and latest news
+/shop — Full product search with PicClick-style masonry grid, filter by category and source
+/category/[slug] — Gear filtered by type: tees, hoodies, hats, jerseys, womens, youth, accessories
+/product/[slug] — Individual product pages with affiliate links to Amazon, eBay, Etsy, Fanatics
+/news — Nebraska basketball news, game recaps, tournament updates
+/news/[slug] — Individual articles
+
+## Data
+Products updated every 6 hours via automated ingestion
+All affiliate links marked rel="sponsored"
+Click tracking: anonymous, no PII collected
+
+## Contact
+Site: nebrasketball.com
+Built with Next.js, Supabase, Vercel

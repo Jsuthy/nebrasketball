@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --red: #D11F3A;
+  --red-dk: #A8001C;
+  --red-glow: rgba(209, 31, 58, 0.35);
+  --black: #0A0A0A;
+  --s1: #111111;
+  --s2: #181818;
+  --s3: #222222;
+  --border: rgba(255, 255, 255, 0.07);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.38);
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
 }
+
+/* Display font utility */
+.font-display { font-family: var(--font-display); }
+
+/* Source badge colors */
+.badge-amazon   { background: #FF9900; color: #000; }
+.badge-ebay     { background: #E53238; color: #fff; }
+.badge-etsy     { background: #F56400; color: #fff; }
+.badge-fanatics { background: #003087; color: #fff; }
+
+/* Clip-path button shape */
+.btn-angled {
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.7); }
+}
+.pulse { animation: pulse 2s infinite; }
+
+/* Modal pop animation */
+@keyframes modalPop {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.modal-pop { animation: modalPop 0.18s ease forwards; }
+
+/* News card hover */
+.news-card:hover { background: var(--s2) !important; }
+
+/* Browse All link hover */
+.browse-link:hover { border-color: var(--red) !important; }
+
+/* CTA outline button hover */
+.btn-outline:hover {
+  border-color: white !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+/* Breadcrumb link hover */
+.breadcrumb-link:hover { color: white !important; }
