@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/constants";
 
 export interface SeedProduct {
   id: string;
@@ -44,7 +45,9 @@ export default function MiniProductCard({ product }: { product: ProductProp }) {
   const price = product.price;
   const wasPrice = isSeedProduct(product) ? product.was : (product as DBProduct).original_price;
   const imageUrl = isSeedProduct(product) ? null : (product as DBProduct).image_url;
-  const emoji = isSeedProduct(product) ? product.emoji : "🏀";
+  const emoji = isSeedProduct(product)
+    ? product.emoji
+    : (CATEGORIES.find((c) => c.slug === (product as DBProduct).category)?.emoji ?? "🏀");
   const source = product.source;
 
   return (

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/constants";
 
 export interface ShopProduct {
   id: string;
@@ -35,7 +36,9 @@ function getWasPrice(product: ShopProduct): number | null {
 }
 
 function getEmoji(product: ShopProduct): string {
-  return product.emoji ?? "🏀";
+  if (product.emoji) return product.emoji;
+  const cat = CATEGORIES.find((c) => c.slug === product.category);
+  return cat?.emoji ?? "🏀";
 }
 
 export default function ProductMasonryCard({

@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { formatPrice, capFirst } from "@/lib/utils";
+import { CATEGORIES } from "@/lib/constants";
 import type { ShopProduct } from "./ProductMasonryCard";
+
+function getCategoryEmoji(product: ShopProduct): string {
+  if (product.emoji) return product.emoji;
+  const cat = CATEGORIES.find((c) => c.slug === product.category);
+  return cat?.emoji ?? "🏀";
+}
 
 interface ProductModalProps {
   product: ShopProduct;
@@ -46,7 +53,7 @@ export default function ProductModal({
 
   const wasPrice = product.original_price ?? product.was ?? null;
   const clicks = product.click_count ?? product.clicks ?? 0;
-  const emoji = product.emoji ?? "🏀";
+  const emoji = getCategoryEmoji(product);
 
   const similar = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
@@ -340,7 +347,7 @@ export default function ProductModal({
                         style={{ objectFit: "cover" }}
                       />
                     ) : (
-                      <span style={{ fontSize: 26 }}>{p.emoji ?? "🏀"}</span>
+                      <span style={{ fontSize: 26 }}>{getCategoryEmoji(p)}</span>
                     )}
                   </div>
                   <div
