@@ -22,11 +22,6 @@ export interface ShopProduct {
   description?: string | null;
 }
 
-function getCardHeight(product: ShopProduct): number {
-  const raw = product.id.replace(/-/g, "").slice(-4);
-  return 140 + (parseInt(raw, 16) % 161);
-}
-
 function getClicks(product: ShopProduct): number {
   return product.click_count ?? product.clicks ?? 0;
 }
@@ -48,7 +43,6 @@ export default function ProductMasonryCard({
   product: ShopProduct;
   onProductClick: (p: ShopProduct) => void;
 }) {
-  const h = getCardHeight(product);
   const clicks = getClicks(product);
   const wasPrice = getWasPrice(product);
   const emoji = getEmoji(product);
@@ -56,19 +50,36 @@ export default function ProductMasonryCard({
 
   return (
     <div
-      className="group"
+      className="group product-card"
       onClick={() => onProductClick(product)}
       style={{
         position: "relative",
         overflow: "hidden",
-        background: "var(--s2)",
+        background: "var(--s1)",
         cursor: "pointer",
-        breakInside: "avoid",
-        marginBottom: 3,
+        borderRadius: 4,
+        border: "1px solid var(--border)",
+        transition: "border-color 0.2s, box-shadow 0.2s",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      {/* Image area */}
-      <div style={{ height: h, overflow: "hidden", position: "relative" }}>
+      <style jsx>{`
+        .product-card:hover {
+          border-color: var(--red) !important;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+      `}</style>
+
+      {/* Image area — fixed aspect ratio */}
+      <div
+        style={{
+          aspectRatio: "1",
+          overflow: "hidden",
+          position: "relative",
+          background: "var(--s2)",
+        }}
+      >
         <div
           className="group-hover:scale-[1.04]"
           style={{
@@ -77,7 +88,7 @@ export default function ProductMasonryCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transition: "transform 0.25s",
+            transition: "transform 0.3s",
           }}
         >
           {product.image_url ? (
@@ -85,98 +96,94 @@ export default function ProductMasonryCard({
               src={product.image_url}
               alt={product.title}
               fill
-              sizes="(max-width: 640px) 50vw, 25vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               style={{ objectFit: "cover" }}
+              unoptimized
             />
           ) : (
-            <span style={{ fontSize: Math.round(h * 0.38) }}>{emoji}</span>
+            <span style={{ fontSize: 64 }}>{emoji}</span>
           )}
         </div>
-      </div>
 
-      {/* Source pin */}
-      <span
-        className={`badge-${product.source}`}
-        style={{
-          position: "absolute",
-          top: 7,
-          left: 7,
-          zIndex: 10,
-          fontFamily: "var(--font-display)",
-          fontWeight: 800,
-          fontSize: 9,
-          letterSpacing: "0.04em",
-          padding: "2px 7px",
-          textTransform: "uppercase",
-          opacity: 0.9,
-        }}
-      >
-        {product.source}
-      </span>
-
-      {/* Hot pin */}
-      {isHot && (
+        {/* Source badge */}
         <span
+          className={`badge-${product.source}`}
           style={{
             position: "absolute",
-            top: 7,
-            right: 7,
+            top: 8,
+            left: 8,
             zIndex: 10,
-            background: "var(--red)",
-            color: "white",
             fontFamily: "var(--font-display)",
             fontWeight: 800,
             fontSize: 9,
-            letterSpacing: "0.06em",
-            padding: "2px 6px",
+            letterSpacing: "0.04em",
+            padding: "2px 7px",
             textTransform: "uppercase",
+            opacity: 0.9,
           }}
         >
-          Hot
+          {product.source}
         </span>
-      )}
 
-      {/* Hover overlay */}
-      <div
-        className="opacity-0 translate-y-[5px] group-hover:opacity-100 group-hover:translate-y-0"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "8px 10px 10px",
-          background: "linear-gradient(transparent, rgba(0,0,0,0.94))",
-          transition: "all 0.18s",
-        }}
-      >
+        {/* Hot badge */}
+        {isHot && (
+          <span
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              zIndex: 10,
+              background: "var(--red)",
+              color: "white",
+              fontFamily: "var(--font-display)",
+              fontWeight: 800,
+              fontSize: 9,
+              letterSpacing: "0.06em",
+              padding: "2px 6px",
+              textTransform: "uppercase",
+            }}
+          >
+            Hot
+          </span>
+        )}
+      </div>
+
+      {/* Product info — always visible */}
+      <div style={{ padding: "12px 14px 14px", flex: 1, display: "flex", flexDirection: "column" }}>
         <div
           className="font-display"
           style={{
             fontWeight: 700,
-            fontSize: 12,
+            fontSize: 13,
             textTransform: "uppercase",
-            color: "white",
-            lineHeight: 1.2,
-            marginBottom: 4,
+            color: "var(--text)",
+            lineHeight: 1.25,
+            marginBottom: 8,
+            flex: 1,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {product.title}
         </div>
+
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <span
               className="font-display"
-              style={{ fontWeight: 900, fontSize: 17, color: "white" }}
+              style={{ fontWeight: 900, fontSize: 18, color: "white" }}
             >
               {product.price != null ? formatPrice(product.price) : "—"}
             </span>
             {wasPrice != null && (
               <span
                 style={{
-                  fontSize: 10,
+                  fontSize: 11,
                   color: "var(--muted)",
                   textDecoration: "line-through",
-                  marginLeft: 4,
+                  marginLeft: 6,
                 }}
               >
                 {formatPrice(wasPrice)}
@@ -184,43 +191,36 @@ export default function ProductMasonryCard({
             )}
           </div>
           <span
-            className={`badge-${product.source}`}
+            className="font-display"
             style={{
-              fontFamily: "var(--font-display)",
               fontWeight: 800,
-              fontSize: 9,
-              padding: "2px 6px",
+              fontSize: 10,
               textTransform: "uppercase",
+              background: "var(--red)",
+              color: "white",
+              padding: "4px 10px",
+              borderRadius: 2,
+              whiteSpace: "nowrap",
+              transition: "background 0.15s",
             }}
           >
-            {product.source}
+            View Deal
           </span>
         </div>
+
         {clicks > 0 && (
           <div
             className="font-display"
             style={{
               fontSize: 10,
-              color: "rgba(255,255,255,0.35)",
-              marginTop: 1,
+              color: "var(--muted)",
+              marginTop: 6,
             }}
           >
             {clicks} clicks this week
           </div>
         )}
       </div>
-
-      {/* Red border on hover */}
-      <div
-        className="opacity-0 group-hover:opacity-100"
-        style={{
-          position: "absolute",
-          inset: 0,
-          border: "2px solid var(--red)",
-          pointerEvents: "none",
-          transition: "opacity 0.15s",
-        }}
-      />
     </div>
   );
 }

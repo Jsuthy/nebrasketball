@@ -1,8 +1,14 @@
-import { createClient } from "../lib/supabase/server";
+/* eslint-disable @typescript-eslint/no-require-imports */
+require("dotenv").config({ path: ".env.local" });
+
+import { createClient } from "@supabase/supabase-js";
 import { FALLBACK_NEWS } from "../lib/news-data";
 
 async function main() {
-  const supabase = await createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   for (const post of FALLBACK_NEWS) {
     const { error } = await supabase.from("news_posts").upsert(

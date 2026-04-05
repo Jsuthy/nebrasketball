@@ -17,10 +17,10 @@ export default function MasonryGrid({
   return (
     <div
       style={{
-        columnCount: cols,
-        columnGap: 3,
-        padding: 3,
-        ["--cols" as string]: cols,
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 16,
+        padding: 16,
       }}
     >
       {products.map((product) => (

@@ -169,26 +169,52 @@ function ShopContent() {
       {loading ? (
         <div
           style={{
-            columnCount: zoomCols,
-            columnGap: 3,
-            padding: 3,
+            display: "grid",
+            gridTemplateColumns: `repeat(${zoomCols}, 1fr)`,
+            gap: 16,
+            padding: 16,
           }}
         >
-          {Array.from({ length: 12 }).map((_, i) => {
-            const h = 140 + ((i * 47) % 161);
-            return (
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              style={{
+                background: "var(--s1)",
+                borderRadius: 4,
+                border: "1px solid var(--border)",
+                overflow: "hidden",
+              }}
+            >
               <div
-                key={i}
                 style={{
-                  height: h,
+                  aspectRatio: "1",
                   background: "var(--s2)",
-                  marginBottom: 3,
-                  breakInside: "avoid",
                   animation: "pulse 1.5s infinite",
                 }}
               />
-            );
-          })}
+              <div style={{ padding: "12px 14px 14px" }}>
+                <div
+                  style={{
+                    height: 14,
+                    width: "80%",
+                    background: "var(--s2)",
+                    borderRadius: 2,
+                    marginBottom: 8,
+                    animation: "pulse 1.5s infinite",
+                  }}
+                />
+                <div
+                  style={{
+                    height: 20,
+                    width: "40%",
+                    background: "var(--s2)",
+                    borderRadius: 2,
+                    animation: "pulse 1.5s infinite",
+                  }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       ) : sorted.length === 0 ? (
         <div

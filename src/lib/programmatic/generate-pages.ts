@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@supabase/supabase-js";
 import { SPORTS, CATEGORIES, PRICE_RANGES } from "@/lib/constants";
 import { buildMetaDescription } from "@/lib/compliance";
 
@@ -19,7 +19,10 @@ export async function generateProgrammaticPages(): Promise<{
   updated: number;
   skipped: number;
 }> {
-  const supabase = await createClient();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   const pages: ProgrammaticPageInsert[] = [];
   const MIN_PRODUCTS = 3;
 

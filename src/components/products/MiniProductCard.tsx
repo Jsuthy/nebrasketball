@@ -92,6 +92,7 @@ export default function MiniProductCard({ product }: { product: ProductProp }) {
             fill
             sizes="(max-width: 640px) 50vw, 175px"
             style={{ objectFit: "cover" }}
+            unoptimized
           />
         ) : (
           <span style={{ fontSize: 52 }}>{emoji}</span>

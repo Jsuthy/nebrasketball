@@ -1,8 +1,14 @@
-import { createClient } from "../lib/supabase/server";
+/* eslint-disable @typescript-eslint/no-require-imports */
+require("dotenv").config({ path: ".env.local" });
+
+import { createClient } from "@supabase/supabase-js";
 import { CATEGORIES } from "../lib/constants";
 
 async function main() {
-  const supabase = await createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   for (const cat of CATEGORIES) {
     const { error } = await supabase.from("categories").upsert(
