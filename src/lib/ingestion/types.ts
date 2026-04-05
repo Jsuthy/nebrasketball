@@ -24,6 +24,6 @@ export interface IngestionResult {
   updated: number;
   failed: number;
   errors: string[];
-  sources: { ebay: number; etsy: number; amazon: number; manual: number };
+  sources: { ebay: number; etsy: number; amazon: number; fanatics: number; manual: number };
   bySport: Record<SportSlug, number>;
 }

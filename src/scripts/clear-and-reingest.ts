@@ -11,6 +11,7 @@ const supabase = createClient(
 // Inline the ingestion logic since we can't use Next.js server imports
 import { fetchEtsyProducts } from "../lib/ingestion/etsy";
 import { fetchEbayProducts } from "../lib/ingestion/ebay";
+import { fetchFanaticsProducts } from "../lib/ingestion/fanatics";
 
 async function clearAndReingest() {
   console.log("Deleting all existing products...");
@@ -43,7 +44,16 @@ async function clearAndReingest() {
     console.error("Etsy failed:", err);
   }
 
-  const allProducts = [...ebayProducts, ...etsyProducts];
+  console.log("Fetching from Fanatics...");
+  let fanaticsProducts: Awaited<ReturnType<typeof fetchFanaticsProducts>> = [];
+  try {
+    fanaticsProducts = await fetchFanaticsProducts();
+    console.log(`Fanatics: ${fanaticsProducts.length} products`);
+  } catch (err) {
+    console.error("Fanatics failed:", err);
+  }
+
+  const allProducts = [...ebayProducts, ...etsyProducts, ...fanaticsProducts];
 
   if (allProducts.length === 0) {
     console.error("\nNo products fetched from any source. Check your API keys.");
@@ -88,6 +98,7 @@ async function clearAndReingest() {
   console.log(`\nDone. ${added} real products now in database.`);
   console.log(`  eBay: ${ebayProducts.length}`);
   console.log(`  Etsy: ${etsyProducts.length}`);
+  console.log(`  Fanatics: ${fanaticsProducts.length}`);
   process.exit(0);
 }
 

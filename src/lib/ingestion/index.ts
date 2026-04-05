@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { fetchEbayProducts } from "./ebay";
 import { fetchEtsyProducts } from "./etsy";
 import { fetchAmazonProducts } from "./amazon";
+import { fetchFanaticsProducts } from "./fanatics";
 import { generateProgrammaticPages } from "@/lib/programmatic/generate-pages";
 import type { NormalizedProduct, IngestionResult } from "./types";
 import type { SportSlug } from "@/lib/supabase/types";
@@ -23,14 +24,15 @@ export async function runIngestion(): Promise<IngestionResult> {
     updated: 0,
     failed: 0,
     errors: [],
-    sources: { ebay: 0, etsy: 0, amazon: 0, manual: 0 },
+    sources: { ebay: 0, etsy: 0, amazon: 0, fanatics: 0, manual: 0 },
     bySport,
   };
 
-  const [ebayResult, etsyResult, amazonResult] = await Promise.allSettled([
+  const [ebayResult, etsyResult, amazonResult, fanaticsResult] = await Promise.allSettled([
     fetchEbayProducts(),
     fetchEtsyProducts(),
     fetchAmazonProducts(),
+    fetchFanaticsProducts(),
   ]);
 
   const allProducts: NormalizedProduct[] = [];
@@ -54,6 +56,13 @@ export async function runIngestion(): Promise<IngestionResult> {
     allProducts.push(...amazonResult.value);
   } else {
     result.errors.push(`Amazon fetch failed: ${amazonResult.reason}`);
+  }
+
+  if (fanaticsResult.status === "fulfilled") {
+    result.sources.fanatics = fanaticsResult.value.length;
+    allProducts.push(...fanaticsResult.value);
+  } else {
+    result.errors.push(`Fanatics fetch failed: ${fanaticsResult.reason}`);
   }
 
   // Deduplicate by (external_id + source)
