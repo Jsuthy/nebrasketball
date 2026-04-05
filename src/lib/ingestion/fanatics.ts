@@ -50,7 +50,8 @@ export async function fetchFanaticsProducts(): Promise<NormalizedProduct[]> {
         "a[href*='/nebraska-cornhuskers/']",
       ];
 
-      let cards = $([]);
+      let cards = $(selectors[0]);
+      cards = cards.slice(0, 0); // empty selection
       for (const sel of selectors) {
         cards = $(sel);
         if (cards.length > 0) {
