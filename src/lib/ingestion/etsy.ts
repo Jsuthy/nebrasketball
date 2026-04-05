@@ -1,5 +1,6 @@
 import type { NormalizedProduct } from "./types";
-import { categorizeByTitle, generateSlug, isNebraskaProduct } from "./utils";
+import { categorizeByTitle, generateSlug, isNebraskaProduct, detectSport, detectBrand } from "./utils";
+import { SPORTS } from "@/lib/constants";
 
 interface EtsyListing {
   listing_id: number;
@@ -18,17 +19,21 @@ export async function fetchEtsyProducts(): Promise<NormalizedProduct[]> {
   if (!apiKey || apiKey === "your_etsy_api_key") return [];
 
   try {
-    const queries = [
-      "nebraska basketball",
-      "cornhuskers basketball",
-      "huskers basketball shirt",
-    ];
+    // Build queries from all sports
+    const queries: { query: string; sportSlug: string }[] = [];
+    for (const sport of SPORTS) {
+      for (const term of sport.searchTerms) {
+        queries.push({ query: term, sportSlug: sport.slug });
+      }
+    }
 
     const allItems: NormalizedProduct[] = [];
     const seenIds = new Set<string>();
 
-    for (const q of queries) {
+    for (const { query: q, sportSlug } of queries) {
       try {
+        console.log(`Fetching Etsy: ${sportSlug} - ${q}`);
+
         const url = new URL(
           "https://openapi.etsy.com/v3/application/listings/active"
         );
@@ -76,11 +81,16 @@ export async function fetchEtsyProducts(): Promise<NormalizedProduct[]> {
             affiliate_url: listing.url,
             slug: generateSlug(listing.title, id),
             category: categorizeByTitle(listing.title),
+            sport: detectSport(listing.title),
+            brand: detectBrand(listing.title),
             tags: listing.tags || [],
             is_featured: false,
             is_active: true,
           });
         }
+
+        // Rate limit protection
+        await new Promise((r) => setTimeout(r, 250));
       } catch (err) {
         console.error(`Etsy query error for "${q}":`, err);
       }

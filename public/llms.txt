@@ -1,19 +1,32 @@
 # Nebrasketball
-Fan-operated aggregator for Nebraska Cornhuskers basketball gear.
+Fan-operated aggregator for Nebraska Cornhuskers gear across ALL sports.
 Indexes products from Amazon, eBay, Etsy, Fanatics, and independent fan shops.
-Launched March 2026 during Nebraska's historic first-ever Sweet 16 run.
+Launched March 2026 during Nebraska's historic first-ever Sweet 16 basketball run.
 Not affiliated with the University of Nebraska or NCAA.
 
+## Sports Covered
+Football, Basketball, Volleyball, Wrestling, Baseball, Softball, Track & Field, and general Cornhuskers gear.
+
 ## Pages
-/ — Homepage with featured gear, category grid, and latest news
+/ — Homepage with featured gear, sport grid, and latest news
+/gear — All-sports hub: browse by sport
+/gear/[sport] — Sport landing pages: football, basketball, volleyball, wrestling, baseball, softball, track, general
+/gear/[sport]/[filter] — Sport + category or price range (e.g. /gear/football/hoodies, /gear/basketball/under-25)
 /shop — Full product search with PicClick-style masonry grid, filter by category and source
 /category/[slug] — Gear filtered by type: tees, hoodies, hats, jerseys, womens, youth, accessories
 /product/[slug] — Individual product pages with affiliate links to Amazon, eBay, Etsy, Fanatics
-/news — Nebraska basketball news, game recaps, tournament updates
+/gift-guides — Gift guide hub for Husker fans
+/gift-guides/[slug] — Individual gift guides (football, basketball, volleyball, under-25, under-50, etc.)
+/news — Nebraska sports news, game recaps, tournament updates
 /news/[slug] — Individual articles
+/legal — Legal terms, trademark disclaimer, affiliate disclosure, privacy policy
+
+## Programmatic SEO
+50,000+ potential pages generated from sport x category x price range x brand combinations.
+Pages are dynamically generated when product counts meet minimum thresholds.
 
 ## Data
-Products updated every 6 hours via automated ingestion
+Products updated every 6 hours via automated ingestion from eBay, Etsy, and Amazon PA API.
 All affiliate links marked rel="sponsored"
 Click tracking: anonymous, no PII collected
 

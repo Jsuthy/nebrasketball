@@ -1,5 +1,6 @@
 import type { NormalizedProduct } from "./types";
-import { categorizeByTitle, generateSlug, isNebraskaProduct } from "./utils";
+import { categorizeByTitle, generateSlug, isNebraskaProduct, detectSport, detectBrand } from "./utils";
+import { SPORTS } from "@/lib/constants";
 
 let cachedToken: string | null = null;
 let tokenExpiry = 0;
@@ -46,18 +47,21 @@ export async function fetchEbayProducts(): Promise<NormalizedProduct[]> {
   try {
     const token = await getEbayToken();
 
-    const queries = [
-      "Nebraska Cornhuskers basketball shirt",
-      "Nebraska Huskers basketball hoodie",
-      "Nebraska basketball jersey",
-      "Nebraska Cornhuskers hat cap basketball",
-    ];
+    // Build queries from all sports
+    const queries: { query: string; sportSlug: string }[] = [];
+    for (const sport of SPORTS) {
+      for (const term of sport.searchTerms) {
+        queries.push({ query: term, sportSlug: sport.slug });
+      }
+    }
 
     const allItems: NormalizedProduct[] = [];
     const seenIds = new Set<string>();
 
-    for (const q of queries) {
+    for (const { query: q, sportSlug } of queries) {
       try {
+        console.log(`Fetching eBay: ${sportSlug} - ${q}`);
+
         const url = new URL(
           "https://api.ebay.com/buy/browse/v1/item_summary/search"
         );
@@ -105,12 +109,17 @@ export async function fetchEbayProducts(): Promise<NormalizedProduct[]> {
             affiliate_url: item.itemWebUrl,
             slug: generateSlug(item.title, item.itemId),
             category: categorizeByTitle(item.title),
+            sport: detectSport(item.title),
+            brand: detectBrand(item.title),
             tags:
               item.categories?.map((c) => c.categoryName) || [],
             is_featured: false,
             is_active: true,
           });
         }
+
+        // Rate limit protection
+        await new Promise((r) => setTimeout(r, 250));
       } catch (err) {
         console.error(`eBay query error for "${q}":`, err);
       }

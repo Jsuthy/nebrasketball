@@ -1,4 +1,4 @@
-import type { ProductSource, CategorySlug } from "@/lib/supabase/types";
+import type { ProductSource, CategorySlug, SportSlug } from "@/lib/supabase/types";
 
 export interface NormalizedProduct {
   external_id: string;
@@ -11,6 +11,8 @@ export interface NormalizedProduct {
   affiliate_url: string;
   slug: string;
   category: CategorySlug;
+  sport: SportSlug;
+  brand: string | null;
   tags: string[];
   is_featured: boolean;
   is_active: boolean;
@@ -23,4 +25,5 @@ export interface IngestionResult {
   failed: number;
   errors: string[];
   sources: { ebay: number; etsy: number; amazon: number; manual: number };
+  bySport: Record<SportSlug, number>;
 }

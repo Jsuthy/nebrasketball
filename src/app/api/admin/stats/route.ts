@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
 
-    const [productsRes, clicksRes, sourcesRes, newsRes, topProductsRes] =
+    const [productsRes, clicksRes, sourcesRes, newsRes, topProductsRes, progPagesRes, sportRes] =
       await Promise.all([
         supabase
           .from("products")
@@ -39,6 +39,14 @@ export async function GET(request: NextRequest) {
           .eq("is_active", true)
           .order("click_count", { ascending: false })
           .limit(20),
+        supabase
+          .from("programmatic_pages")
+          .select("id", { count: "exact", head: true })
+          .eq("is_active", true),
+        supabase
+          .from("products")
+          .select("sport")
+          .eq("is_active", true),
       ]);
 
     const totalProducts = productsRes.count ?? 0;
@@ -50,6 +58,14 @@ export async function GET(request: NextRequest) {
 
     const totalNews = newsRes.count ?? 0;
     const topProducts = topProductsRes.data ?? [];
+    const programmaticPages = progPagesRes.count ?? 0;
+
+    // Sport breakdown
+    const bySport: Record<string, number> = {};
+    for (const row of sportRes.data ?? []) {
+      const sport = row.sport || "general";
+      bySport[sport] = (bySport[sport] || 0) + 1;
+    }
 
     return NextResponse.json({
       totalProducts,
@@ -57,6 +73,8 @@ export async function GET(request: NextRequest) {
       activeSources,
       totalNews,
       topProducts,
+      programmaticPages,
+      bySport,
     });
   } catch (err) {
     console.error("Admin stats error:", err);

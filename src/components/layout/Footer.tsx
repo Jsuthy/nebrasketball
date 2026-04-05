@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Disclaimer from "@/components/ui/Disclaimer";
 
 const SHOP_LINKS = [
   { href: "/category/tees", label: "Tees" },
@@ -9,10 +10,19 @@ const SHOP_LINKS = [
   { href: "/shop", label: "All Gear" },
 ];
 
+const SPORTS_LINKS = [
+  { href: "/gear/football", label: "Football" },
+  { href: "/gear/basketball", label: "Basketball" },
+  { href: "/gear/volleyball", label: "Volleyball" },
+  { href: "/gear/wrestling", label: "Wrestling" },
+  { href: "/gear", label: "All Sports" },
+];
+
 const INFO_LINKS = [
   { href: "/about", label: "Our Story" },
-  { href: "/affiliate-disclosure", label: "Affiliate Disclosure" },
-  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/legal", label: "Legal & Disclosures" },
+  { href: "/legal#affiliate", label: "Affiliate Disclosure" },
+  { href: "/legal#privacy", label: "Privacy Policy" },
   { href: "/news", label: "News" },
 ];
 
@@ -48,7 +58,7 @@ export default function Footer() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "2fr 1fr 1fr",
+          gridTemplateColumns: "2fr 1fr 1fr 1fr",
           gap: 40,
           maxWidth: 960,
           margin: "0 auto",
@@ -74,8 +84,9 @@ export default function Footer() {
               marginTop: 14,
             }}
           >
-            The home for Nebraska Cornhuskers basketball gear. Fan-built.
-            Launched during Nebraska&apos;s historic 2026 Sweet 16 run. GBR.
+            The home for Nebraska Cornhuskers gear — every sport, every fan.
+            Independent aggregator. Launched during Nebraska&apos;s historic 2026
+            Sweet 16 run. GBR.
           </p>
         </div>
 
@@ -89,7 +100,17 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Col 3 — Info */}
+        {/* Col 3 — Sports */}
+        <div>
+          <h4 style={colHeadingStyle}>Sports</h4>
+          {SPORTS_LINKS.map((l) => (
+            <Link key={l.href} href={l.href} style={linkStyle}>
+              {l.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Col 4 — Info */}
         <div>
           <h4 style={colHeadingStyle}>Info</h4>
           {INFO_LINKS.map((l) => (
@@ -100,29 +121,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div
-        style={{
-          borderTop: "1px solid var(--border)",
-          paddingTop: 18,
-          marginTop: 36,
-          maxWidth: 960,
-          margin: "36px auto 0",
-        }}
-      >
-        <p
-          style={{
-            fontSize: 10,
-            color: "rgba(255,255,255,0.16)",
-            lineHeight: 1.65,
-            maxWidth: 640,
-          }}
-        >
-          Nebrasketball is an independent fan site not affiliated with the
-          University of Nebraska or the NCAA. We earn affiliate commissions from
-          qualifying purchases at no extra cost to you. &copy; 2026
-          Nebrasketball.
-        </p>
+      {/* Disclaimer */}
+      <div style={{ maxWidth: 960, margin: "24px auto 0" }}>
+        <Disclaimer variant="full" />
       </div>
 
       {/* Responsive: single column on mobile */}

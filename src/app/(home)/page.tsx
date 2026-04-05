@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { CATEGORIES, SITE_URL } from "@/lib/constants";
+import { SPORTS, SITE_URL } from "@/lib/constants";
+import { buildMetaDescription } from "@/lib/compliance";
 import { getFeaturedProducts, getNewsPosts } from "@/lib/supabase/queries";
 import { FALLBACK_NEWS } from "@/lib/news-data";
 import seedProducts from "@/lib/seed-products.json";
 import MiniProductCard from "@/components/products/MiniProductCard";
 import NewsCard from "@/components/news/NewsCard";
 import EmailCapture from "@/components/ui/EmailCapture";
+import Disclaimer from "@/components/ui/Disclaimer";
 
 export const metadata: Metadata = {
-  title: "Nebrasketball — Shop Nebraska Cornhuskers Basketball Gear",
-  description:
-    "Shop every Nebraska Cornhuskers basketball gear drop from Amazon, eBay, Etsy and Fanatics. Sweet 16 tees, hoodies, jerseys, hats and more. GBR!",
+  title: "Nebrasketball — Shop Nebraska Cornhuskers Gear for Every Sport",
+  description: buildMetaDescription(
+    "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics. Football, basketball, volleyball and more — all in one place. GBR!"
+  ),
   keywords:
-    "nebraska basketball gear, cornhuskers basketball apparel, husker hoops gear, nebraska march madness shirt, nebraska sweet 16 gear",
+    "nebraska cornhuskers gear, nebraska football gear, nebraska basketball gear, nebraska volleyball gear, husker apparel, nebraska march madness",
   openGraph: {
-    title: "Nebrasketball — Shop Nebraska Cornhuskers Basketball Gear",
-    description:
-      "Shop every Nebraska Cornhuskers basketball gear drop from Amazon, eBay, Etsy and Fanatics. Sweet 16 tees, hoodies, jerseys, hats and more. GBR!",
+    title: "Nebrasketball — Shop Nebraska Cornhuskers Gear for Every Sport",
+    description: buildMetaDescription(
+      "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics. Football, basketball, volleyball and more."
+    ),
     url: SITE_URL,
     type: "website",
   },
@@ -35,7 +39,7 @@ const STATS = [
 export default async function Home() {
   let featuredProducts: unknown[] = [];
   try {
-    featuredProducts = await getFeaturedProducts(8);
+    featuredProducts = await getFeaturedProducts(12);
   } catch {
     // Supabase unavailable
   }
@@ -52,8 +56,6 @@ export default async function Home() {
   if (newsPosts.length === 0) {
     newsPosts = FALLBACK_NEWS;
   }
-
-  const categories = CATEGORIES.filter((c) => c.slug !== "accessories");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -79,7 +81,7 @@ export default async function Home() {
 
       {/* 1. ANNOUNCEMENT BANNER */}
       <Link
-        href="/shop"
+        href="/gear"
         style={{
           display: "block",
           background: "var(--red)",
@@ -94,8 +96,7 @@ export default async function Home() {
           letterSpacing: "0.08em",
         }}
       >
-        🏀 SWEET 16 TONIGHT — Nebraska vs Iowa · 7:30pm ET on TBS · Shop
-        Husker Gear →
+        🌽 ALL SPORTS NOW LIVE — Football, Basketball, Volleyball, Wrestling & More · Shop Husker Gear →
       </Link>
 
       {/* 2. HERO SECTION */}
@@ -159,7 +160,7 @@ export default async function Home() {
               gap: 9,
               border: "1px solid rgba(209,31,58,0.4)",
               padding: "5px 16px",
-              marginBottom: 20,
+              marginBottom: 12,
             }}
           >
             <span
@@ -182,9 +183,11 @@ export default async function Home() {
                 color: "var(--red)",
               }}
             >
-              Sweet 16 · March 2026 · GBR
+              All Sports · Every Fan · GBR
             </span>
           </div>
+
+          <Disclaimer variant="short" />
 
           <p
             className="font-display"
@@ -195,10 +198,10 @@ export default async function Home() {
               textTransform: "uppercase",
               color: "var(--muted)",
               marginBottom: 30,
-              marginTop: 0,
+              marginTop: 8,
             }}
           >
-            Every piece of Nebraska basketball gear — one place
+            Nebraska Cornhuskers gear for every sport — all in one place
           </p>
 
           {/* CTA buttons */}
@@ -211,7 +214,7 @@ export default async function Home() {
             }}
           >
             <Link
-              href="/shop"
+              href="/gear"
               className="btn-angled font-display"
               style={{
                 background: "var(--red)",
@@ -370,7 +373,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 5. CATEGORY GRID */}
+      {/* 5. SPORTS GRID */}
       <section style={{ background: "var(--black)", padding: "40px 20px" }}>
         <span
           className="font-display"
@@ -384,7 +387,7 @@ export default async function Home() {
             marginBottom: 6,
           }}
         >
-          Browse by Category
+          Browse by Sport
         </span>
         <h2
           className="font-display"
@@ -396,30 +399,30 @@ export default async function Home() {
             margin: "0 0 18px",
           }}
         >
-          Shop by Type
+          Every Husker Sport
         </h2>
 
-        <div className="category-grid">
+        <div className="sports-grid-home">
           <style>{`
-            .category-grid {
+            .sports-grid-home {
               display: grid;
-              grid-template-columns: repeat(3, 1fr);
+              grid-template-columns: repeat(4, 1fr);
               gap: 2px;
             }
             @media (max-width: 640px) {
-              .category-grid {
+              .sports-grid-home {
                 grid-template-columns: repeat(2, 1fr);
               }
             }
-            .cat-card:hover .cat-emoji {
+            .sport-card-home:hover .sport-emoji-home {
               transform: scale(1.08);
             }
           `}</style>
-          {categories.map((cat) => (
+          {SPORTS.map((sport) => (
             <Link
-              key={cat.slug}
-              href={`/category/${cat.slug}`}
-              className="cat-card"
+              key={sport.slug}
+              href={`/gear/${sport.slug}`}
+              className="sport-card-home"
               style={{
                 aspectRatio: "4/3",
                 background: "var(--s2)",
@@ -432,7 +435,7 @@ export default async function Home() {
               }}
             >
               <span
-                className="cat-emoji"
+                className="sport-emoji-home"
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -443,7 +446,7 @@ export default async function Home() {
                   transition: "transform 0.3s",
                 }}
               >
-                {cat.emoji}
+                {sport.emoji}
               </span>
               <div
                 style={{
@@ -473,19 +476,7 @@ export default async function Home() {
                     display: "block",
                   }}
                 >
-                  {cat.name}
-                </span>
-                <span
-                  className="font-display"
-                  style={{
-                    fontWeight: 600,
-                    fontSize: 11,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "rgba(255,255,255,0.45)",
-                  }}
-                >
-                  {cat.count} items
+                  {sport.name.replace("Nebraska ", "")}
                 </span>
               </div>
             </Link>
@@ -516,7 +507,7 @@ export default async function Home() {
                 marginBottom: 6,
               }}
             >
-              Nebraska Basketball
+              Nebraska Cornhuskers
             </span>
             <h2
               className="font-display"

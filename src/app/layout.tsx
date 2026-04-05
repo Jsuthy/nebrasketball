@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { buildMetaDescription } from "@/lib/compliance";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Nebrasketball",
-    default: "Nebrasketball — Nebraska Cornhuskers Basketball Gear",
+    default: "Nebrasketball — Nebraska Cornhuskers Gear for Every Sport",
   },
-  description:
-    "Shop every Nebraska Cornhuskers basketball gear drop from Amazon, eBay, Etsy and Fanatics — all in one place. GBR.",
+  description: buildMetaDescription(
+    "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics — all sports, all in one place. GBR."
+  ),
   keywords: [
+    "nebraska cornhuskers gear",
+    "nebraska football gear",
     "nebraska basketball gear",
-    "cornhuskers basketball apparel",
-    "husker hoops",
-    "nebraska march madness",
+    "nebraska volleyball gear",
+    "husker apparel",
+    "cornhuskers merchandise",
   ],
   openGraph: {
     type: "website",

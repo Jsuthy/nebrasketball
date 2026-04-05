@@ -1,10 +1,11 @@
 import { createClient } from "./server";
-import type { Product, Category, NewsPost, ClickEvent } from "./types";
+import type { Product, Category, NewsPost, ClickEvent, Sport, ProgrammaticPage } from "./types";
 
 export interface ProductFilters {
   category?: string;
   source?: string;
   search?: string;
+  sport?: string;
   sort?: "popular" | "price_asc" | "price_desc" | "newest";
   limit?: number;
 }
@@ -21,6 +22,9 @@ export async function getProducts(filters?: ProductFilters): Promise<Product[]> 
   }
   if (filters?.source) {
     query = query.eq("source", filters.source);
+  }
+  if (filters?.sport) {
+    query = query.eq("sport", filters.sport);
   }
   if (filters?.search) {
     query = query.ilike("title", `%${filters.search}%`);
@@ -81,6 +85,44 @@ export async function getProductsByCategory(category: string): Promise<Product[]
   return getProducts({ category, sort: "popular" });
 }
 
+export async function getProductsBySport(sport: string): Promise<Product[]> {
+  return getProducts({ sport, sort: "popular" });
+}
+
+export async function getProductsBySportAndCategory(
+  sport: string,
+  category: string
+): Promise<Product[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("is_active", true)
+    .eq("sport", sport)
+    .eq("category", category)
+    .order("click_count", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Product[];
+}
+
+export async function getProductsBySportAndPriceRange(
+  sport: string,
+  priceRange: string
+): Promise<Product[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("is_active", true)
+    .eq("sport", sport)
+    .eq("price_range", priceRange)
+    .order("click_count", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Product[];
+}
+
 export async function getCategories(): Promise<Category[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -90,6 +132,53 @@ export async function getCategories(): Promise<Category[]> {
 
   if (error) throw error;
   return (data ?? []) as Category[];
+}
+
+export async function getSports(): Promise<Sport[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("sports")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order");
+
+  if (error) throw error;
+  return (data ?? []) as Sport[];
+}
+
+export async function getProgrammaticPages(
+  filters?: { sport?: string; page_type?: string }
+): Promise<ProgrammaticPage[]> {
+  const supabase = await createClient();
+  let query = supabase
+    .from("programmatic_pages")
+    .select("*")
+    .eq("is_active", true);
+
+  if (filters?.sport) {
+    query = query.eq("sport", filters.sport);
+  }
+  if (filters?.page_type) {
+    query = query.eq("page_type", filters.page_type);
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as ProgrammaticPage[];
+}
+
+export async function getProgrammaticPageBySlug(
+  slug: string
+): Promise<ProgrammaticPage | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("programmatic_pages")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error && error.code !== "PGRST116") throw error;
+  return (data as ProgrammaticPage) ?? null;
 }
 
 export async function getNewsPost(slug: string): Promise<NewsPost | null> {

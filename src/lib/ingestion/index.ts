@@ -2,17 +2,29 @@ import { createClient } from "@/lib/supabase/server";
 import { fetchEbayProducts } from "./ebay";
 import { fetchEtsyProducts } from "./etsy";
 import { fetchAmazonProducts } from "./amazon";
+import { generateProgrammaticPages } from "@/lib/programmatic/generate-pages";
 import type { NormalizedProduct, IngestionResult } from "./types";
+import type { SportSlug } from "@/lib/supabase/types";
 
 export type { NormalizedProduct, IngestionResult };
 
+const SPORT_SLUGS: SportSlug[] = [
+  "football", "basketball", "volleyball", "wrestling",
+  "baseball", "softball", "track", "general",
+];
+
 export async function runIngestion(): Promise<IngestionResult> {
+  const bySport = Object.fromEntries(
+    SPORT_SLUGS.map((s) => [s, 0])
+  ) as Record<SportSlug, number>;
+
   const result: IngestionResult = {
     added: 0,
     updated: 0,
     failed: 0,
     errors: [],
     sources: { ebay: 0, etsy: 0, amazon: 0, manual: 0 },
+    bySport,
   };
 
   const [ebayResult, etsyResult, amazonResult] = await Promise.allSettled([
@@ -53,6 +65,13 @@ export async function runIngestion(): Promise<IngestionResult> {
     return true;
   });
 
+  // Count by sport
+  for (const p of unique) {
+    if (p.sport in result.bySport) {
+      result.bySport[p.sport]++;
+    }
+  }
+
   if (unique.length === 0) {
     result.errors.push(
       "No products fetched from any source — API keys may not be configured"
@@ -75,6 +94,8 @@ export async function runIngestion(): Promise<IngestionResult> {
       affiliate_url: p.affiliate_url,
       slug: p.slug,
       category: p.category,
+      sport: p.sport,
+      brand: p.brand,
       tags: p.tags,
       is_featured: p.is_featured,
       is_active: p.is_active,
@@ -102,6 +123,24 @@ export async function runIngestion(): Promise<IngestionResult> {
         `Batch upsert exception: ${err instanceof Error ? err.message : String(err)}`
       );
     }
+  }
+
+  const sportCount = Object.values(result.bySport).filter((v) => v > 0).length;
+  console.log(
+    `Ingestion complete: ${result.added} products across ${sportCount} sports`
+  );
+
+  // Generate programmatic pages after ingestion
+  try {
+    const pageResult = await generateProgrammaticPages();
+    console.log(
+      `Pages generated: ${pageResult.created} created, ${pageResult.skipped} failed`
+    );
+  } catch (err) {
+    console.error("Page generation failed:", err);
+    result.errors.push(
+      `Page generation failed: ${err instanceof Error ? err.message : String(err)}`
+    );
   }
 
   return result;
