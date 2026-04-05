@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { fetchEbayProducts } from "./ebay";
 import { fetchEtsyProducts } from "./etsy";
 import { fetchAmazonProducts } from "./amazon";
@@ -79,7 +79,10 @@ export async function runIngestion(): Promise<IngestionResult> {
     return result;
   }
 
-  const supabase = await createClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   // Upsert in batches of 50
   for (let i = 0; i < unique.length; i += 50) {
