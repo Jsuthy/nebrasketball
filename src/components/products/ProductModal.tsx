@@ -7,9 +7,9 @@ import { CATEGORIES } from "@/lib/constants";
 import type { ShopProduct } from "./ProductMasonryCard";
 
 function getCategoryEmoji(product: ShopProduct): string {
-  if (product.emoji) return product.emoji;
+  // placeholder label, not emoji
   const cat = CATEGORIES.find((c) => c.slug === product.category);
-  return cat?.emoji ?? "🏀";
+  return cat?.name ?? "Gear";
 }
 
 interface ProductModalProps {
@@ -53,7 +53,7 @@ export default function ProductModal({
 
   const wasPrice = product.original_price ?? product.was ?? null;
   const clicks = product.click_count ?? product.clicks ?? 0;
-  const emoji = getCategoryEmoji(product);
+  const placeholder = getCategoryEmoji(product);
 
   const similar = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
@@ -150,7 +150,7 @@ export default function ProductModal({
                 style={{ objectFit: "cover" }}
               />
             ) : (
-              <span style={{ fontSize: 90 }}>{emoji}</span>
+              <span style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, fontSize: 22, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "var(--muted)" }}>{placeholder}</span>
             )}
           </div>
 

@@ -45,9 +45,9 @@ export default function MiniProductCard({ product }: { product: ProductProp }) {
   const price = product.price;
   const wasPrice = isSeedProduct(product) ? product.was : (product as DBProduct).original_price;
   const imageUrl = isSeedProduct(product) ? null : (product as DBProduct).image_url;
-  const emoji = isSeedProduct(product)
-    ? product.emoji
-    : (CATEGORIES.find((c) => c.slug === (product as DBProduct).category)?.emoji ?? "🏀");
+  const placeholder = isSeedProduct(product)
+    ? "Gear"
+    : (CATEGORIES.find((c) => c.slug === (product as DBProduct).category)?.name ?? "Gear");
   const source = product.source;
 
   return (
@@ -95,7 +95,7 @@ export default function MiniProductCard({ product }: { product: ProductProp }) {
             unoptimized
           />
         ) : (
-          <span style={{ fontSize: 52 }}>{emoji}</span>
+          <span style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, fontSize: 15, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "var(--muted)" }}>{placeholder}</span>
         )}
         <span
           className={`badge-${source}`}

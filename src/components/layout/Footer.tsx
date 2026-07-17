@@ -2,20 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import Disclaimer from "@/components/ui/Disclaimer";
 
-const SHOP_LINKS = [
-  { href: "/category/tees", label: "Tees" },
-  { href: "/category/hoodies", label: "Hoodies" },
-  { href: "/category/hats", label: "Hats" },
-  { href: "/category/jerseys", label: "Jerseys" },
-  { href: "/shop", label: "All Gear" },
-];
-
 const SPORTS_LINKS = [
-  { href: "/gear/football", label: "Football" },
-  { href: "/gear/basketball", label: "Basketball" },
-  { href: "/gear/volleyball", label: "Volleyball" },
-  { href: "/gear/wrestling", label: "Wrestling" },
-  { href: "/gear", label: "All Sports" },
+  { href: "/football", label: "Football" },
+  { href: "/basketball", label: "Basketball" },
+  { href: "/volleyball", label: "Volleyball" },
+  { href: "/scores", label: "Live Scores" },
 ];
 
 const INFO_LINKS = [
@@ -84,20 +75,10 @@ export default function Footer() {
               marginTop: 14,
             }}
           >
-            The home for Nebraska Cornhuskers gear — every sport, every fan.
+            The Husker fan’s scoreboard — every sport, every schedule, every score.
             Independent aggregator. Launched during Nebraska&apos;s historic 2026
             Sweet 16 run. GBR.
           </p>
-        </div>
-
-        {/* Col 2 — Shop */}
-        <div>
-          <h4 style={colHeadingStyle}>Shop</h4>
-          {SHOP_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} style={linkStyle}>
-              {l.label}
-            </Link>
-          ))}
         </div>
 
         {/* Col 3 — Sports */}

@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { href: "/scores", label: "Scores" },
   { href: "/volleyball", label: "Volleyball" },
   { href: "/football", label: "Football" },
-  { href: "/gear", label: "All Gear" },
   { href: "/news", label: "News" },
 ];
 
@@ -85,9 +84,9 @@ export default function Navbar() {
         })}
       </div>
 
-      {/* RIGHT — Shop Gear button */}
+      {/* RIGHT — Live Scores button */}
       <Link
-        href="/shop"
+        href="/scores"
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: 800,
@@ -107,7 +106,7 @@ export default function Navbar() {
           (e.currentTarget.style.background = "var(--red)")
         }
       >
-        Shop Gear
+        Live Scores
       </Link>
 
       {/* Hide center nav on mobile */}

@@ -30,10 +30,9 @@ function getWasPrice(product: ShopProduct): number | null {
   return product.original_price ?? product.was ?? null;
 }
 
-function getEmoji(product: ShopProduct): string {
-  if (product.emoji) return product.emoji;
+function getPlaceholderLabel(product: ShopProduct): string {
   const cat = CATEGORIES.find((c) => c.slug === product.category);
-  return cat?.emoji ?? "🏀";
+  return cat?.name ?? "Gear";
 }
 
 export default function ProductMasonryCard({
@@ -45,7 +44,7 @@ export default function ProductMasonryCard({
 }) {
   const clicks = getClicks(product);
   const wasPrice = getWasPrice(product);
-  const emoji = getEmoji(product);
+  const placeholder = getPlaceholderLabel(product);
   const isHot = product.is_featured && clicks > 100;
 
   return (
@@ -101,7 +100,7 @@ export default function ProductMasonryCard({
               unoptimized
             />
           ) : (
-            <span style={{ fontSize: 64 }}>{emoji}</span>
+            <span style={{ fontFamily: "var(--font-display, inherit)", fontWeight: 900, fontSize: 18, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "var(--muted)" }}>{placeholder}</span>
           )}
         </div>
 

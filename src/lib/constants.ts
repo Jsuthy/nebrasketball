@@ -1,7 +1,7 @@
 export const SITE_NAME = "Nebrasketball";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nebrasketball.com";
 export const SITE_DESCRIPTION =
-  "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics — all sports, all in one place.";
+  "Nebraska Cornhuskers schedules, live scores, rankings and how-to-watch — every sport, updated automatically.";
 
 export const CATEGORIES = [
   {

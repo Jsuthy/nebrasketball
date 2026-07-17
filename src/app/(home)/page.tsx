@@ -12,16 +12,16 @@ import EmailCapture from "@/components/ui/EmailCapture";
 import Disclaimer from "@/components/ui/Disclaimer";
 
 export const metadata: Metadata = {
-  title: "Nebrasketball — Shop Nebraska Cornhuskers Gear for Every Sport",
+  title: "Nebrasketball — Nebraska Huskers Schedules, Scores & How to Watch",
   description: buildMetaDescription(
-    "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics. Football, basketball, volleyball and more — all in one place. GBR!"
+    "Every Nebraska Cornhuskers schedule, score, ranking and broadcast — football, basketball, volleyball and more, updated automatically. GBR!"
   ),
   keywords:
-    "nebraska cornhuskers gear, nebraska football gear, nebraska basketball gear, nebraska volleyball gear, husker apparel, nebraska march madness",
+    "nebraska cornhuskers schedule, nebraska basketball scores, nebraska volleyball schedule, husker football tv schedule, nebraska live scores",
   openGraph: {
-    title: "Nebrasketball — Shop Nebraska Cornhuskers Gear for Every Sport",
+    title: "Nebrasketball — Nebraska Huskers Schedules, Scores & How to Watch",
     description: buildMetaDescription(
-      "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics. Football, basketball, volleyball and more."
+      "Every Nebraska Cornhuskers schedule, score and broadcast — updated automatically."
     ),
     url: SITE_URL,
     type: "website",
@@ -62,14 +62,6 @@ export default async function Home() {
     "@type": "WebSite",
     name: "Nebrasketball",
     url: SITE_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/shop?q={search_term}`,
-      },
-      "query-input": "required name=search_term",
-    },
   };
 
   return (
@@ -81,7 +73,7 @@ export default async function Home() {
 
       {/* 1. ANNOUNCEMENT BANNER */}
       <Link
-        href="/gear"
+        href="/scores"
         style={{
           display: "block",
           background: "var(--red)",
@@ -96,7 +88,7 @@ export default async function Home() {
           letterSpacing: "0.08em",
         }}
       >
-        🌽 ALL SPORTS NOW LIVE — Football, Basketball, Volleyball, Wrestling & More · Shop Husker Gear →
+        ALL SPORTS LIVE — Schedules, scores & how to watch every Husker team →
       </Link>
 
       {/* 2. HERO SECTION */}
@@ -201,7 +193,7 @@ export default async function Home() {
               marginTop: 8,
             }}
           >
-            Nebraska Cornhuskers gear for every sport — all in one place
+            Every Nebraska Cornhuskers schedule, score & broadcast — all in one place
           </p>
 
           {/* CTA buttons */}
@@ -214,7 +206,7 @@ export default async function Home() {
             }}
           >
             <Link
-              href="/gear"
+              href="/scores"
               className="btn-angled font-display"
               style={{
                 background: "var(--red)",
@@ -228,7 +220,7 @@ export default async function Home() {
                 display: "inline-block",
               }}
             >
-              Browse All Gear
+              Live Scores
             </Link>
             <Link
               href="/news"
@@ -264,28 +256,24 @@ export default async function Home() {
           {[
             {
               href: "/basketball",
-              emoji: "🏀",
               label: "Basketball",
               blurb: "The Sweet 16 run was just the start. Schedule, scores & rankings.",
               featured: true,
             },
             {
               href: "/volleyball",
-              emoji: "🏐",
               label: "Volleyball",
               blurb: "2026 schedule, TV info & the attendance record tracker.",
               featured: false,
             },
             {
               href: "/football",
-              emoji: "🏈",
               label: "Football",
               blurb: "2026 schedule, kickoff times & how to watch every game.",
               featured: false,
             },
             {
               href: "/scores",
-              emoji: "🔴",
               label: "Live Scores",
               blurb: "Husker scoreboard across every sport, updated every minute.",
               featured: false,
@@ -320,7 +308,7 @@ export default async function Home() {
                   marginBottom: 6,
                 }}
               >
-                {card.emoji} {card.label}
+                {card.label}
               </div>
               <p style={{ margin: 0, color: "var(--muted)", fontSize: 13, lineHeight: 1.5 }}>
                 {card.blurb}
@@ -381,76 +369,6 @@ export default async function Home() {
         ))}
       </div>
 
-      {/* 4. FEATURED GEAR */}
-      <section style={{ background: "var(--s1)", padding: "40px 20px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            marginBottom: 18,
-          }}
-        >
-          <div>
-            <span
-              className="font-display"
-              style={{
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "var(--red)",
-                display: "block",
-                marginBottom: 6,
-              }}
-            >
-              Top Picks
-            </span>
-            <h2
-              className="font-display"
-              style={{
-                fontWeight: 900,
-                fontSize: "clamp(28px, 5vw, 48px)",
-                textTransform: "uppercase",
-                lineHeight: 0.9,
-                margin: 0,
-              }}
-            >
-              Featured Gear
-            </h2>
-          </div>
-          <Link
-            href="/shop"
-            className="font-display"
-            style={{
-              fontWeight: 700,
-              fontSize: 12,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--red)",
-              textDecoration: "none",
-              borderBottom: "1px solid transparent",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Browse All →
-          </Link>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(175px, 1fr))",
-            gap: 2,
-          }}
-        >
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {(featuredProducts as any[]).map((product) => (
-            <MiniProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
       {/* 5. SPORTS GRID */}
       <section style={{ background: "var(--black)", padding: "40px 20px" }}>
         <span
@@ -499,7 +417,7 @@ export default async function Home() {
           {SPORTS.map((sport) => (
             <Link
               key={sport.slug}
-              href={`/gear/${sport.slug}`}
+              href={["football","basketball","volleyball"].includes(sport.slug) ? `/${sport.slug}` : "/scores"}
               className="sport-card-home"
               style={{
                 aspectRatio: "4/3",
@@ -520,11 +438,14 @@ export default async function Home() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 52,
+                  fontSize: 56,
+                  fontWeight: 900,
+                  color: "var(--red)",
                   transition: "transform 0.3s",
                 }}
+                aria-hidden="true"
               >
-                {sport.emoji}
+                {sport.name.replace("Nebraska ", "").charAt(0)}
               </span>
               <div
                 style={{
@@ -674,7 +595,7 @@ export default async function Home() {
             fontSize: 15,
           }}
         >
-          New gear with every win. Get 10% off your first order.
+          Schedules, scores and Husker news in your inbox — nothing else.
         </p>
         <EmailCapture />
       </section>
