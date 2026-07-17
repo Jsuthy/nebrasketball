@@ -62,6 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+    { url: `${SITE_URL}/basketball`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
+    { url: `${SITE_URL}/volleyball`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
+    { url: `${SITE_URL}/football`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
+    { url: `${SITE_URL}/scores`, lastModified: new Date(), changeFrequency: "hourly", priority: 0.9 },
+    { url: `${SITE_URL}/volleyball/attendance`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${SITE_URL}/shop`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/gear`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/news`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },

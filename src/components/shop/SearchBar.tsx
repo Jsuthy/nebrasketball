@@ -25,7 +25,7 @@ export default function SearchBar({ value, onChange, onClear }: SearchBarProps) 
         placeholder="Search Nebraska basketball gear — tees, hoodies, jerseys, hats..."
         style={{
           width: "100%",
-          border: "1.5px solid rgba(209,31,58,0.5)",
+          border: "1.5px solid rgba(208,0,0,0.5)",
           background: "var(--s2)",
           color: "var(--text)",
           fontFamily: "var(--font-body)",
@@ -36,7 +36,7 @@ export default function SearchBar({ value, onChange, onClear }: SearchBarProps) 
         }}
         onFocus={(e) => (e.currentTarget.style.borderColor = "var(--red)")}
         onBlur={(e) =>
-          (e.currentTarget.style.borderColor = "rgba(209,31,58,0.5)")
+          (e.currentTarget.style.borderColor = "rgba(208,0,0,0.5)")
         }
       />
       {value.length > 0 && (

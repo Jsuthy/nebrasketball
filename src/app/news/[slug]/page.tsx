@@ -181,7 +181,7 @@ export default async function NewsArticlePage({
         <div
           style={{
             background: "var(--s1)",
-            border: "1px solid rgba(209,31,58,0.3)",
+            border: "1px solid rgba(208,0,0,0.3)",
             padding: 22,
             margin: "28px 0",
             textAlign: "center",

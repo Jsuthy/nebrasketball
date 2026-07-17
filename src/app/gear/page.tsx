@@ -48,7 +48,7 @@ export default async function GearPage() {
           padding: "48px 20px 36px",
           textAlign: "center",
           background:
-            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(209,31,58,0.10) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(208,0,0,0.10) 0%, transparent 70%)",
         }}
       >
         <h1

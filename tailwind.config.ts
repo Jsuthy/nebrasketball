@@ -10,9 +10,10 @@ const config: Config = {
       },
       colors: {
         red: {
-          DEFAULT: "#D11F3A",
-          dark: "#A8001C",
+          DEFAULT: "#D00000",
+          dark: "#9A0000",
         },
+        cream: "#F5F1E7",
         black: "#0A0A0A",
         s1: "#111111",
         s2: "#181818",

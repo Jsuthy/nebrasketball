@@ -5,9 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --red: #D11F3A;
-  --red-dk: #A8001C;
-  --red-glow: rgba(209, 31, 58, 0.35);
+  --red: #D00000;
+  --red-dk: #9A0000;
+  --red-glow: rgba(208,0,0, 0.35);
+  --cream: #F5F1E7;
   --black: #0A0A0A;
   --s1: #111111;
   --s2: #181818;
@@ -71,3 +72,10 @@ body {
 
 /* Breadcrumb link hover */
 .breadcrumb-link:hover { color: white !important; }
+
+/* Schedule tables: drop the location column on phones (NN/g column hiding)
+   so the table fits without horizontal scroll */
+@media (max-width: 639px) {
+  .sched-loc { display: none; }
+  .sched-table { min-width: 0 !important; }
+}

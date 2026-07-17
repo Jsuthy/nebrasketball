@@ -228,7 +228,10 @@ export const SOURCES = [
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/basketball", label: "Basketball" },
+  { href: "/scores", label: "Scores" },
+  { href: "/volleyball", label: "Volleyball" },
+  { href: "/football", label: "Football" },
   { href: "/gear", label: "All Gear" },
-  { href: "/shop", label: "Shop" },
   { href: "/news", label: "News" },
 ] as const;

@@ -107,7 +107,7 @@ export default async function Home() {
           padding: "60px 20px 48px",
           textAlign: "center",
           background:
-            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(209,31,58,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(208,0,0,0.12) 0%, transparent 70%)",
         }}
       >
         {/* Court lines SVG */}
@@ -146,7 +146,7 @@ export default async function Home() {
               display: "block",
               margin: "0 auto 28px",
               filter:
-                "drop-shadow(0 0 40px rgba(209,31,58,0.55)) drop-shadow(0 4px 20px rgba(0,0,0,0.9))",
+                "drop-shadow(0 0 40px rgba(208,0,0,0.55)) drop-shadow(0 4px 20px rgba(0,0,0,0.9))",
               maxWidth: "100%",
               height: "auto",
             }}
@@ -158,7 +158,7 @@ export default async function Home() {
               display: "inline-flex",
               alignItems: "center",
               gap: 9,
-              border: "1px solid rgba(209,31,58,0.4)",
+              border: "1px solid rgba(208,0,0,0.4)",
               padding: "5px 16px",
               marginBottom: 12,
             }}
@@ -249,6 +249,84 @@ export default async function Home() {
               Latest News
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* 2b. SPORTS HUB — schedules, scores, trackers */}
+      <section style={{ maxWidth: 1080, margin: "0 auto", padding: "10px 20px 44px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {[
+            {
+              href: "/basketball",
+              emoji: "🏀",
+              label: "Basketball",
+              blurb: "The Sweet 16 run was just the start. Schedule, scores & rankings.",
+              featured: true,
+            },
+            {
+              href: "/volleyball",
+              emoji: "🏐",
+              label: "Volleyball",
+              blurb: "2026 schedule, TV info & the attendance record tracker.",
+              featured: false,
+            },
+            {
+              href: "/football",
+              emoji: "🏈",
+              label: "Football",
+              blurb: "2026 schedule, kickoff times & how to watch every game.",
+              featured: false,
+            },
+            {
+              href: "/scores",
+              emoji: "🔴",
+              label: "Live Scores",
+              blurb: "Husker scoreboard across every sport, updated every minute.",
+              featured: false,
+            },
+          ].map((card) => (
+            <Link
+              key={card.href}
+              href={card.href}
+              className="news-card"
+              style={{
+                display: "block",
+                textDecoration: "none",
+                color: "var(--text)",
+                border: card.featured
+                  ? "1px solid rgba(208,0,0,0.5)"
+                  : "1px solid var(--border)",
+                borderTop: card.featured
+                  ? "3px solid var(--red)"
+                  : "3px solid transparent",
+                borderRadius: 4,
+                background: "var(--s1)",
+                padding: "16px 18px",
+              }}
+            >
+              <div
+                className="font-display"
+                style={{
+                  fontWeight: 800,
+                  fontSize: 17,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  marginBottom: 6,
+                }}
+              >
+                {card.emoji} {card.label}
+              </div>
+              <p style={{ margin: 0, color: "var(--muted)", fontSize: 13, lineHeight: 1.5 }}>
+                {card.blurb}
+              </p>
+            </Link>
+          ))}
         </div>
       </section>
 
