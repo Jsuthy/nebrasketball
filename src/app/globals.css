@@ -1,24 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  /* Brand scarlet: reserved for small branded elements (CTA, live dot,
+     color-blocked hero card) — never body text on dark surfaces. */
   --red: #D00000;
   --red-dk: #9A0000;
   --red-glow: rgba(208,0,0, 0.35);
+  /* Working accent for text/links on dark: desaturated, lightened scarlet
+     (Material dark-theme doctrine; ~6.5:1 on the base surface). */
+  --accent: #E57373;
   --cream: #F5F1E7;
-  --black: #0A0A0A;
-  --s1: #111111;
-  --s2: #181818;
-  --s3: #222222;
-  --border: rgba(255, 255, 255, 0.07);
+  /* Dark elevation ladder: #121212 base, higher = lighter (white overlays). */
+  --black: #121212;
+  --s1: #1E1E1E;
+  --s2: #232323;
+  --s3: #282828;
+  --border: rgba(255, 255, 255, 0.08);
   --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.38);
+  --muted: rgba(255, 255, 255, 0.58);
+  --faint: rgba(255, 255, 255, 0.38);
   --font-display: 'Barlow Condensed', sans-serif;
   --font-body: 'Barlow', sans-serif;
+  --font-data: 'Inter', sans-serif;
 }
+
+/* Cross-document view transitions (progressive; no-op where unsupported) */
+@view-transition { navigation: auto; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -78,4 +89,64 @@ body {
 @media (max-width: 639px) {
   .sched-loc { display: none; }
   .sched-table { min-width: 0 !important; }
+}
+
+/* Utility face for data: fixed-width (tabular) numerals so scores and
+   schedule times align and never jitter when live values update */
+.font-data {
+  font-family: var(--font-data);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* Oversized display numerals — the identity move */
+.stat-hero {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+}
+
+/* Ghost numeral watermark behind sections */
+.ghost-num {
+  position: absolute;
+  inset: auto 0 auto auto;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.8;
+  color: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  white-space: nowrap;
+}
+
+/* Scroll-driven section reveals: off-main-thread, pure CSS, progressive */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    @keyframes reveal-in {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+}
+
+/* Motion accessibility: silence decorative animation when the OS asks */
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}
+
+/* Section label — small, tracked-out, cream */
+.section-label {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
 }

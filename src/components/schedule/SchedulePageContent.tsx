@@ -11,10 +11,11 @@ import EmailCapture from "@/components/ui/EmailCapture";
 const sectionTitle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
   textTransform: "uppercase",
-  letterSpacing: "0.1em",
-  fontSize: 17,
+  letterSpacing: "0.08em",
+  fontSize: 22,
   fontWeight: 800,
-  margin: "0 0 14px",
+  color: "var(--cream)",
+  margin: "0 0 16px",
 };
 
 async function RankingsWidget({
@@ -35,12 +36,19 @@ async function RankingsWidget({
       ? [...top10, nebraskaRow]
       : top10;
   return (
-    <section style={{ marginTop: 48 }}>
+    <section className="reveal" style={{ marginTop: 64 }}>
       <h2 style={sectionTitle}>{rankings.title}</h2>
-      <p style={{ color: "var(--muted)", fontSize: 13, margin: "0 0 12px" }}>
+      <p style={{ color: "var(--faint)", fontSize: 13, margin: "0 0 14px" }}>
         {rankings.updated} · {rankingsNote}
       </p>
-      <div style={{ border: "1px solid var(--border)", borderRadius: 4 }}>
+      <div
+        style={{
+          background: "var(--s1)",
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          overflow: "hidden",
+        }}
+      >
         {shown.map((row) => {
           const isNebraska = row.team.toLowerCase().startsWith("nebraska");
           return (
@@ -49,28 +57,34 @@ async function RankingsWidget({
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: "9px 16px",
+                alignItems: "center",
+                padding: "10px 18px",
                 borderTop: row === shown[0] ? "none" : "1px solid var(--border)",
-                background: isNebraska ? "rgba(208,0,0,0.12)" : "transparent",
+                background: isNebraska ? "rgba(208,0,0,0.14)" : "transparent",
                 fontWeight: isNebraska ? 700 : 400,
                 fontSize: 14,
               }}
             >
-              <span>
+              <span style={{ display: "flex", alignItems: "baseline" }}>
                 <span
+                  className="font-data"
                   style={{
                     display: "inline-block",
-                    width: 28,
-                    color: isNebraska ? "var(--red)" : "var(--muted)",
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 800,
+                    width: 34,
+                    color: isNebraska ? "var(--accent)" : "var(--faint)",
+                    fontWeight: 700,
+                    fontSize: 13,
                   }}
                 >
                   {row.rank}
                 </span>
-                {row.team}
+                <span style={{ color: isNebraska ? "var(--cream)" : "var(--text)" }}>
+                  {row.team}
+                </span>
               </span>
-              <span style={{ color: "var(--muted)" }}>{row.record}</span>
+              <span className="font-data" style={{ color: "var(--muted)", fontSize: 13 }}>
+                {row.record}
+              </span>
             </div>
           );
         })}
@@ -105,7 +119,15 @@ export default async function SchedulePageContent({
   const seasonRecord = record(games);
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px 60px" }}>
+    <div
+      style={{
+        maxWidth: 1000,
+        margin: "0 auto",
+        padding: "56px 20px 72px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -113,65 +135,63 @@ export default async function SchedulePageContent({
         }}
       />
 
-      <header style={{ marginBottom: 28 }}>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            color: "var(--red)",
-            fontWeight: 700,
-            fontSize: 13,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: 8,
-          }}
-        >
-          {heroKicker}
-        </div>
+      {/* Ghost season numeral behind the hero */}
+      <div className="ghost-num" style={{ top: -30, right: -20, fontSize: "clamp(160px, 28vw, 320px)" }} aria-hidden>
+        {schedule.seasonLabel}
+      </div>
+
+      <header style={{ marginBottom: 40, position: "relative", zIndex: 1 }}>
+        <div className="section-label" style={{ marginBottom: 10 }}>{heroKicker}</div>
         <h1
+          className="stat-hero"
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 44,
-            fontWeight: 900,
+            fontSize: "clamp(46px, 8vw, 84px)",
             textTransform: "uppercase",
-            lineHeight: 1.05,
             margin: 0,
           }}
         >
           {heroTitle}
         </h1>
-        <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.6, maxWidth: 640, marginTop: 12 }}>
+        <p
+          style={{
+            color: "var(--muted)",
+            fontSize: 16,
+            lineHeight: 1.65,
+            maxWidth: 640,
+            marginTop: 18,
+          }}
+        >
           {intro}
         </p>
       </header>
 
       {upNext && (
-        <div style={{ marginBottom: 32 }}>
+        <div className="reveal" style={{ marginBottom: 44, position: "relative", zIndex: 1 }}>
           <NextGameCard game={upNext} record={seasonRecord} sportLabel={schedule.sportLabel} />
         </div>
       )}
 
-      <section>
-        <h2 style={sectionTitle}>
-          Full {schedule.seasonLabel} Schedule
-        </h2>
+      <section className="reveal" style={{ position: "relative", zIndex: 1 }}>
+        <h2 style={sectionTitle}>Full {schedule.seasonLabel} Schedule</h2>
         <ScheduleTable games={games} />
-        <p style={{ color: "var(--muted)", fontSize: 12, marginTop: 10 }}>
-          Home games shaded. Times and TV update automatically as the Big Ten
-          announces broadcast assignments; scores update automatically on game day.
+        <p style={{ color: "var(--faint)", fontSize: 12, marginTop: 12 }}>
+          Home games shaded. Times, TV, and scores update automatically all season.
         </p>
       </section>
 
-      <section style={{ marginTop: 48 }}>
-        <h2 style={sectionTitle}>How to Watch Nebraska {schedule.sportLabel} in {schedule.seasonLabel}</h2>
+      <section className="reveal" style={{ marginTop: 64 }}>
+        <h2 style={sectionTitle}>
+          How to Watch Nebraska {schedule.sportLabel} in {schedule.seasonLabel}
+        </h2>
         <div style={{ display: "grid", gap: 12 }}>
           {howToWatch.map((item) => (
             <div
               key={item.label}
               style={{
-                border: "1px solid var(--border)",
-                borderRadius: 4,
                 background: "var(--s1)",
-                padding: "14px 18px",
+                border: "1px solid var(--border)",
+                borderRadius: 6,
+                padding: "18px 22px",
               }}
             >
               <div
@@ -180,13 +200,14 @@ export default async function SchedulePageContent({
                   fontWeight: 800,
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
-                  fontSize: 14,
-                  marginBottom: 4,
+                  fontSize: 15,
+                  color: "var(--cream)",
+                  marginBottom: 6,
                 }}
               >
                 {item.label}
               </div>
-              <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>
+              <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.65 }}>
                 {item.body}
               </p>
             </div>
@@ -198,20 +219,20 @@ export default async function SchedulePageContent({
 
       {extraSection}
 
-      <section style={{ marginTop: 48 }}>
+      <section className="reveal" style={{ marginTop: 64 }}>
         <h2 style={sectionTitle}>Never Miss a Match</h2>
-        <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 14px" }}>
+        <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 16px" }}>
           Get schedule changes, TV announcements, and score recaps in your inbox.
         </p>
         <EmailCapture />
-        <p style={{ marginTop: 20, fontSize: 14 }}>
-          <Link href={`/gear/${gearSlug}`} style={{ color: "var(--red)", fontWeight: 600 }}>
+        <p style={{ marginTop: 22, fontSize: 14 }}>
+          <Link href={`/gear/${gearSlug}`} style={{ color: "var(--accent)", fontWeight: 600 }}>
             Shop Nebraska {schedule.sportLabel} gear →
           </Link>
         </p>
       </section>
 
-      <div style={{ marginTop: 40 }}>
+      <div style={{ marginTop: 48 }}>
         <Disclaimer variant="short" />
       </div>
     </div>

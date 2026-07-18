@@ -28,10 +28,11 @@ export const metadata: Metadata = {
 const sectionTitle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
   textTransform: "uppercase",
-  letterSpacing: "0.1em",
-  fontSize: 17,
+  letterSpacing: "0.08em",
+  fontSize: 22,
   fontWeight: 800,
-  margin: "0 0 14px",
+  color: "var(--cream)",
+  margin: "0 0 16px",
 };
 
 const MILESTONES = [
@@ -83,6 +84,7 @@ function OpponentList({ title, teams }: { title: string; teams: string[] }) {
           textTransform: "uppercase",
           letterSpacing: "0.06em",
           fontSize: 14,
+          color: "var(--cream)",
           marginBottom: 8,
         }}
       >
@@ -109,28 +111,27 @@ function OpponentList({ title, teams }: { title: string; teams: string[] }) {
 
 export default function BasketballPage() {
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px 60px" }}>
-      <header style={{ marginBottom: 28 }}>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            color: "var(--red)",
-            fontWeight: 700,
-            fontSize: 13,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: 8,
-          }}
-        >
+    <div
+      style={{
+        maxWidth: 1000,
+        margin: "0 auto",
+        padding: "56px 20px 72px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div className="ghost-num" style={{ top: -20, right: -10, fontSize: "clamp(180px, 30vw, 360px)" }} aria-hidden>
+        16
+      </div>
+      <header style={{ marginBottom: 40, position: "relative", zIndex: 1 }}>
+        <div className="section-label" style={{ marginBottom: 10 }}>
           This Is Nebrasketball
         </div>
         <h1
+          className="stat-hero"
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 44,
-            fontWeight: 900,
+            fontSize: "clamp(46px, 8vw, 84px)",
             textTransform: "uppercase",
-            lineHeight: 1.05,
             margin: 0,
           }}
         >
@@ -146,7 +147,7 @@ export default function BasketballPage() {
         </p>
       </header>
 
-      <section>
+      <section className="reveal" style={{ position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>The 2026 Breakthrough</h2>
         <div
           style={{
@@ -166,15 +167,7 @@ export default function BasketballPage() {
                 padding: "18px 20px",
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 900,
-                  fontSize: 40,
-                  lineHeight: 1,
-                  color: "var(--red)",
-                }}
-              >
+              <div className="stat-hero" style={{ fontSize: 46 }}>
                 {m.stat}
               </div>
               <div
@@ -195,13 +188,13 @@ export default function BasketballPage() {
           ))}
         </div>
         <p style={{ marginTop: 14, fontSize: 14 }}>
-          <Link href="/news" style={{ color: "var(--red)", fontWeight: 600 }}>
+          <Link href="/news" style={{ color: "var(--accent)", fontWeight: 600 }}>
             Full Sweet 16 coverage in News →
           </Link>
         </p>
       </section>
 
-      <section style={{ marginTop: 48 }}>
+      <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>2026-27: Announced So Far</h2>
         <div
           style={{
@@ -219,10 +212,11 @@ export default function BasketballPage() {
               fontWeight: 800,
               textTransform: "uppercase",
               fontSize: 15,
+              color: "var(--cream)",
               marginBottom: 4,
             }}
           >
-            🏆 The defending national champs are coming to Lincoln
+            The defending national champs are coming to Lincoln
           </div>
           <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>
             2026 champion Michigan visits Pinnacle Bank Arena this season — the
@@ -283,7 +277,7 @@ export default function BasketballPage() {
           * neutral site. Home nonconference games, Big Ten dates, and TV
           assignments are still to be announced — this page updates as they
           land, and live scores appear here and on the{" "}
-          <Link href="/scores" style={{ color: "var(--red)" }}>
+          <Link href="/scores" style={{ color: "var(--accent)" }}>
             Husker scoreboard
           </Link>{" "}
           all season.
@@ -295,7 +289,7 @@ export default function BasketballPage() {
         </div>
       </section>
 
-      <section style={{ marginTop: 48 }}>
+      <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>The 2026-27 Roster</h2>
         <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 14px", maxWidth: 660 }}>
           The core that made history returns — led by first-team All-Big Ten
@@ -310,7 +304,7 @@ export default function BasketballPage() {
 
       <BasketballRankings />
 
-      <section style={{ marginTop: 48 }}>
+      <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>How to Watch Nebraska Basketball</h2>
         <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.7, maxWidth: 660, margin: 0 }}>
           Big Ten basketball airs across FOX, FS1, CBS, NBC/Peacock, and BTN,
@@ -321,14 +315,14 @@ export default function BasketballPage() {
         </p>
       </section>
 
-      <section style={{ marginTop: 48 }}>
+      <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>Never Miss a Game</h2>
         <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 14px" }}>
           Schedule releases, TV announcements, and score recaps in your inbox.
         </p>
         <EmailCapture />
         <p style={{ marginTop: 20, fontSize: 14 }}>
-          <Link href="/gear/basketball" style={{ color: "var(--red)", fontWeight: 600 }}>
+          <Link href="/gear/basketball" style={{ color: "var(--accent)", fontWeight: 600 }}>
             Shop Nebraska basketball gear →
           </Link>
         </p>

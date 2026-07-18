@@ -17,20 +17,33 @@ function ResultCell({ game }: { game: GameWithResult }) {
     const scoreline = `${nebraskaScore ?? "–"}–${opponentScore ?? "–"}`;
     if (state === "live") {
       return (
-        <span style={{ color: "var(--red)", fontWeight: 700 }}>
-          <span className="pulse" style={{ marginRight: 6 }}>●</span>
+        <span className="font-data" style={{ color: "var(--accent)", fontWeight: 700 }}>
+          <span
+            className="pulse"
+            style={{
+              display: "inline-block",
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "var(--red)",
+              marginRight: 8,
+            }}
+          />
           {scoreline} · {currentPeriod}
         </span>
       );
     }
     return (
-      <span style={{ fontWeight: 700, color: won ? "#4ade80" : "#f87171" }}>
+      <span
+        className="font-data"
+        style={{ fontWeight: 700, color: won ? "#66BB6A" : "var(--accent)" }}
+      >
         {won ? "W" : "L"} {scoreline}
       </span>
     );
   }
   return (
-    <span style={{ color: "var(--muted)" }}>
+    <span className="font-data" style={{ color: "var(--muted)", fontSize: 13 }}>
       {game.time ?? "TBA"}
     </span>
   );
@@ -38,24 +51,34 @@ function ResultCell({ game }: { game: GameWithResult }) {
 
 export default function ScheduleTable({ games }: { games: GameWithResult[] }) {
   return (
-    <div style={{ overflowX: "auto", border: "1px solid var(--border)", borderRadius: 4 }}>
-      <table className="sched-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 560 }}>
+    <div
+      style={{
+        overflowX: "auto",
+        background: "var(--s1)",
+        border: "1px solid var(--border)",
+        borderRadius: 6,
+      }}
+    >
+      <table
+        className="sched-table"
+        style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 560 }}
+      >
         <thead>
           <tr
             style={{
               fontFamily: "var(--font-display)",
               textTransform: "uppercase",
-              letterSpacing: "0.08em",
+              letterSpacing: "0.1em",
               fontSize: 12,
-              color: "var(--muted)",
+              color: "var(--faint)",
               textAlign: "left",
             }}
           >
-            <th style={{ padding: "10px 14px" }}>Date</th>
-            <th style={{ padding: "10px 14px" }}>Opponent</th>
-            <th className="sched-loc" style={{ padding: "10px 14px" }}>Location</th>
-            <th style={{ padding: "10px 14px" }}>TV</th>
-            <th style={{ padding: "10px 14px" }}>Time / Result</th>
+            <th style={{ padding: "12px 16px" }}>Date</th>
+            <th style={{ padding: "12px 16px" }}>Opponent</th>
+            <th className="sched-loc" style={{ padding: "12px 16px" }}>Location</th>
+            <th style={{ padding: "12px 16px" }}>TV</th>
+            <th style={{ padding: "12px 16px" }}>Time / Result</th>
           </tr>
         </thead>
         <tbody>
@@ -64,41 +87,49 @@ export default function ScheduleTable({ games }: { games: GameWithResult[] }) {
               key={`${game.date}-${game.opponent}`}
               style={{
                 borderTop: "1px solid var(--border)",
-                background: game.homeAway === "home" ? "var(--s1)" : "transparent",
+                background: game.homeAway === "home" ? "var(--s2)" : "transparent",
               }}
             >
-              <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
+              <td
+                className="font-data"
+                style={{ padding: "13px 16px", whiteSpace: "nowrap", fontSize: 13 }}
+              >
                 {formatDate(game.date)}
               </td>
-              <td style={{ padding: "12px 14px", fontWeight: 600 }}>
-                <span style={{ color: "var(--muted)", marginRight: 6 }}>
+              <td style={{ padding: "13px 16px", fontWeight: 600 }}>
+                <span style={{ color: "var(--faint)", marginRight: 6 }}>
                   {game.homeAway === "home" ? "vs" : game.homeAway === "away" ? "at" : "vs*"}
                 </span>
-                {game.opponent}
+                <span style={{ color: "var(--text)" }}>{game.opponent}</span>
                 {game.note && (
                   <span
                     style={{
                       display: "block",
                       fontSize: 11,
                       fontWeight: 400,
-                      color: "var(--muted)",
-                      marginTop: 2,
+                      color: "var(--faint)",
+                      marginTop: 3,
                     }}
                   >
                     {game.note}
                   </span>
                 )}
               </td>
-              <td className="sched-loc" style={{ padding: "12px 14px", color: "var(--muted)", fontSize: 13 }}>
+              <td
+                className="sched-loc"
+                style={{ padding: "13px 16px", color: "var(--muted)", fontSize: 13 }}
+              >
                 {game.venue}
-                <span style={{ display: "block", fontSize: 11 }}>{game.city}</span>
+                <span style={{ display: "block", fontSize: 11, color: "var(--faint)" }}>
+                  {game.city}
+                </span>
               </td>
-              <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "13px 16px", whiteSpace: "nowrap", fontSize: 13 }}>
                 {game.result?.network ?? game.tv ?? (
-                  <span style={{ color: "var(--muted)" }}>TBA</span>
+                  <span style={{ color: "var(--faint)" }}>TBA</span>
                 )}
               </td>
-              <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
+              <td style={{ padding: "13px 16px", whiteSpace: "nowrap" }}>
                 <ResultCell game={game} />
               </td>
             </tr>

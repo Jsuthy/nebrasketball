@@ -23,7 +23,7 @@ export default function Navbar() {
         top: 0,
         zIndex: 400,
         height: 56,
-        background: "rgba(8,8,8,0.97)",
+        background: "rgba(18,18,18,0.97)",
         backdropFilter: "blur(14px)",
         WebkitBackdropFilter: "blur(14px)",
         borderBottom: "1px solid var(--border)",

@@ -46,7 +46,9 @@ export function scheduleJsonLd(schedule: SeasonSchedule, pagePath: string) {
         name:
           game.homeAway === "away"
             ? `Nebraska at ${game.opponent}`
-            : `${game.opponent} at Nebraska`,
+            : game.homeAway === "neutral"
+              ? `Nebraska vs ${game.opponent}`
+              : `${game.opponent} at Nebraska`,
         startDate: eventStartIso(game),
         location: {
           "@type": "Place",

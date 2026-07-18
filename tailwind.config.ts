@@ -7,17 +7,19 @@ const config: Config = {
       fontFamily: {
         display: ["Barlow Condensed", "sans-serif"],
         body: ["Barlow", "sans-serif"],
+        data: ["Inter", "sans-serif"],
       },
       colors: {
         red: {
           DEFAULT: "#D00000",
           dark: "#9A0000",
         },
+        accent: "#E57373",
         cream: "#F5F1E7",
-        black: "#0A0A0A",
-        s1: "#111111",
-        s2: "#181818",
-        s3: "#222222",
+        black: "#121212",
+        s1: "#1E1E1E",
+        s2: "#232323",
+        s3: "#282828",
       },
     },
   },

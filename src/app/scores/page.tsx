@@ -45,26 +45,14 @@ export default async function ScoresPage() {
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px 60px" }}>
       <header style={{ marginBottom: 28 }}>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            color: "var(--red)",
-            fontWeight: 700,
-            fontSize: 13,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: 8,
-          }}
-        >
+        <div className="section-label" style={{ marginBottom: 10 }}>
           Live · Refreshes Every Minute
         </div>
         <h1
+          className="stat-hero"
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 44,
-            fontWeight: 900,
+            fontSize: "clamp(46px, 8vw, 84px)",
             textTransform: "uppercase",
-            lineHeight: 1.05,
             margin: 0,
           }}
         >
@@ -73,11 +61,11 @@ export default async function ScoresPage() {
         <p style={{ color: "var(--muted)", fontSize: 15, marginTop: 10 }}>
           Today&apos;s Nebraska games plus ranked matchups in volleyball,
           football, and basketball.{" "}
-          <Link href="/volleyball" style={{ color: "var(--red)" }}>
+          <Link href="/volleyball" style={{ color: "var(--accent)" }}>
             Volleyball schedule
           </Link>{" "}
           ·{" "}
-          <Link href="/football" style={{ color: "var(--red)" }}>
+          <Link href="/football" style={{ color: "var(--accent)" }}>
             Football schedule
           </Link>
         </p>

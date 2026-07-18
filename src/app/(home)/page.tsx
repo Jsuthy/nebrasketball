@@ -172,7 +172,7 @@ export default async function Home() {
                 fontSize: 11,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "var(--red)",
+                color: "var(--accent)",
               }}
             >
               All Sports · Every Fan · GBR

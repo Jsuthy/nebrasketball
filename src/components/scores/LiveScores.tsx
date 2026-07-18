@@ -11,31 +11,52 @@ const POLL_MS = 60_000;
 
 function TeamRow({ team, state }: { team: ScoreboardGame["home"]; state: string }) {
   const isNebraska = team.seo === "nebraska";
+  const dimmed = state === "final" && !team.winner;
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "6px 0",
+        padding: "7px 0",
         fontWeight: isNebraska ? 700 : 500,
-        color: state === "final" && !team.winner ? "var(--muted)" : "var(--text)",
+        color: dimmed ? "var(--faint)" : "var(--text)",
       }}
     >
-      <span>
+      <span style={{ fontSize: 15 }}>
         {team.rank !== null && (
-          <span style={{ color: "var(--muted)", fontSize: 12, marginRight: 6 }}>
-            #{team.rank}
+          <span
+            className="font-data"
+            style={{ color: "var(--faint)", fontSize: 11, marginRight: 7 }}
+          >
+            {team.rank}
           </span>
         )}
         {team.name}
         {isNebraska && (
-          <span style={{ color: "var(--red)", fontSize: 11, marginLeft: 6 }}>
+          <span
+            style={{
+              color: "var(--accent)",
+              fontSize: 10,
+              marginLeft: 7,
+              fontFamily: "var(--font-display)",
+              fontWeight: 800,
+              letterSpacing: "0.1em",
+            }}
+          >
             GBR
           </span>
         )}
       </span>
-      <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800 }}>
+      <span
+        className="font-data"
+        style={{
+          fontSize: 26,
+          fontWeight: 800,
+          color: dimmed ? "var(--faint)" : "var(--cream)",
+          lineHeight: 1,
+        }}
+      >
         {team.score ?? ""}
       </span>
     </div>
@@ -43,13 +64,14 @@ function TeamRow({ team, state }: { team: ScoreboardGame["home"]; state: string 
 }
 
 function GameCard({ game }: { game: ScoreboardGame }) {
+  const isLive = game.state === "live";
   return (
     <div
       style={{
-        border: "1px solid var(--border)",
-        borderRadius: 4,
         background: "var(--s1)",
-        padding: "12px 16px",
+        border: isLive ? "1px solid rgba(208,0,0,0.5)" : "1px solid var(--border)",
+        borderRadius: 6,
+        padding: "14px 18px",
         minWidth: 240,
       }}
     >
@@ -57,22 +79,36 @@ function GameCard({ game }: { game: ScoreboardGame }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
           fontSize: 11,
           textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          color: game.state === "live" ? "var(--red)" : "var(--muted)",
+          letterSpacing: "0.1em",
+          color: isLive ? "var(--accent)" : "var(--faint)",
           fontFamily: "var(--font-display)",
           fontWeight: 700,
-          marginBottom: 6,
+          marginBottom: 8,
         }}
       >
-        <span>
-          {game.state === "live" && <span className="pulse">● </span>}
-          {game.state === "live"
-            ? game.currentPeriod
-            : game.state === "final"
-              ? "Final"
-              : game.startTime}
+        <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {isLive && (
+            <span
+              className="pulse"
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--red)",
+                display: "inline-block",
+              }}
+            />
+          )}
+          <span className={isLive || game.state === "pre" ? "font-data" : undefined}>
+            {isLive
+              ? game.currentPeriod
+              : game.state === "final"
+                ? "Final"
+                : game.startTime}
+          </span>
         </span>
         {game.network && <span>{game.network}</span>}
       </div>
@@ -99,14 +135,30 @@ export default function LiveScores({ initial }: { initial: ScoresPayload }) {
 
   if (data.sports.length === 0) {
     return (
-      <p style={{ color: "var(--muted)", padding: "40px 0", textAlign: "center" }}>
-        No games today. Check the schedules for what&apos;s next — Go Big Red.
-      </p>
+      <div
+        style={{
+          background: "var(--s1)",
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          padding: "48px 24px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          className="stat-hero"
+          style={{ fontSize: 34, textTransform: "uppercase", marginBottom: 8 }}
+        >
+          No Games Today
+        </div>
+        <p style={{ color: "var(--muted)", fontSize: 14, margin: 0 }}>
+          Check the schedules for what&apos;s next — Go Big Red.
+        </p>
+      </div>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
       {data.sports.map((board) => (
         <section key={board.sport}>
           <h2
@@ -114,9 +166,10 @@ export default function LiveScores({ initial }: { initial: ScoresPayload }) {
               fontFamily: "var(--font-display)",
               textTransform: "uppercase",
               letterSpacing: "0.1em",
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: 800,
-              margin: "0 0 12px",
+              color: "var(--cream)",
+              margin: "0 0 14px",
             }}
           >
             {board.label}
@@ -124,7 +177,7 @@ export default function LiveScores({ initial }: { initial: ScoresPayload }) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
               gap: 12,
             }}
           >
