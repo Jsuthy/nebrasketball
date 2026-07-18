@@ -131,7 +131,7 @@ export default async function Home() {
             src="/logos/logo-stacked.png"
             alt="Nebrasketball"
             width={340}
-            height={154}
+            height={119}
             priority
             unoptimized
             style={{
