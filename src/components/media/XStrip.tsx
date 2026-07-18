@@ -3,11 +3,13 @@ import { createClient } from "@supabase/supabase-js";
 // "Latest from @Nebrasketball" rendered from the posting engine's own ledger
 // (no external scripts, no API reads) + a follow strip of official accounts.
 
+// Handles verified against huskers.com's team directory (July 2026).
 const FOLLOW_ACCOUNTS = [
   { handle: "Nebrasketball", label: "Nebrasketball — this site" },
   { handle: "Huskers", label: "Huskers — official athletics" },
-  { handle: "HuskerVBall", label: "Nebraska Volleyball — official" },
-  { handle: "HuskerHoops", label: "Nebraska Basketball — official" },
+  { handle: "HuskerMBB", label: "Nebraska Men's Basketball — official" },
+  { handle: "HuskerVB", label: "Nebraska Volleyball — official" },
+  { handle: "HuskerFootball", label: "Nebraska Football — official" },
 ];
 
 async function latestPost(): Promise<{
