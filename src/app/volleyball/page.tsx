@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SchedulePageContent from "@/components/schedule/SchedulePageContent";
+import HighlightsRail from "@/components/media/HighlightsRail";
 import { VOLLEYBALL_2026 } from "@/lib/schedule/data";
 
 export const revalidate = 1800;
@@ -81,7 +82,12 @@ export default function VolleyballPage() {
       howToWatch={HOW_TO_WATCH}
       rankingsNote="Nebraska highlighted. Updates automatically when new polls are released."
       gearSlug="volleyball"
-      extraSection={<AttendanceTeaser />}
+      extraSection={
+        <>
+          <AttendanceTeaser />
+          <HighlightsRail sport="volleyball" title="Latest Volleyball Video" />
+        </>
+      }
     />
   );
 }

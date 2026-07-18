@@ -1,27 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { SPORTS, SITE_URL } from "@/lib/constants";
+import { SITE_URL } from "@/lib/constants";
 import { buildMetaDescription } from "@/lib/compliance";
-import { getFeaturedProducts, getNewsPosts } from "@/lib/supabase/queries";
+import { getNewsPosts } from "@/lib/supabase/queries";
 import { FALLBACK_NEWS } from "@/lib/news-data";
-import seedProducts from "@/lib/seed-products.json";
-import MiniProductCard from "@/components/products/MiniProductCard";
+import { VOLLEYBALL_2026, FOOTBALL_2026 } from "@/lib/schedule/data";
+import { attachResults, nextGame } from "@/lib/schedule/results";
+import type { GameWithResult } from "@/lib/schedule/types";
 import NewsCard from "@/components/news/NewsCard";
 import EmailCapture from "@/components/ui/EmailCapture";
 import Disclaimer from "@/components/ui/Disclaimer";
+import HighlightsRail from "@/components/media/HighlightsRail";
+import XStrip from "@/components/media/XStrip";
+
+export const revalidate = 900;
 
 export const metadata: Metadata = {
-  title: "Nebrasketball — Nebraska Huskers Schedules, Scores & How to Watch",
+  title: "Nebrasketball — Husker Schedules, Live Scores & Records",
   description: buildMetaDescription(
-    "Every Nebraska Cornhuskers schedule, score, ranking and broadcast — football, basketball, volleyball and more, updated automatically. GBR!"
+    "Nebraska Cornhuskers schedules, live scores, TV info and record tracking for basketball, volleyball and football — updated automatically all season. GBR."
   ),
-  keywords:
-    "nebraska cornhuskers schedule, nebraska basketball scores, nebraska volleyball schedule, husker football tv schedule, nebraska live scores",
   openGraph: {
-    title: "Nebrasketball — Nebraska Huskers Schedules, Scores & How to Watch",
+    title: "Nebrasketball — Husker Schedules, Live Scores & Records",
     description: buildMetaDescription(
-      "Every Nebraska Cornhuskers schedule, score and broadcast — updated automatically."
+      "Nebraska schedules, live scores, TV info and records — updated automatically all season."
     ),
     url: SITE_URL,
     type: "website",
@@ -36,17 +38,48 @@ const STATS = [
   { num: "GBR", lbl: "Go Big Red" },
 ];
 
-export default async function Home() {
-  let featuredProducts: unknown[] = [];
-  try {
-    featuredProducts = await getFeaturedProducts(12);
-  } catch {
-    // Supabase unavailable
-  }
-  if (featuredProducts.length === 0) {
-    featuredProducts = seedProducts.filter((p) => p.is_featured);
-  }
+const SPORT_TILES = [
+  { slug: "basketball", label: "Basketball" },
+  { slug: "volleyball", label: "Volleyball" },
+  { slug: "football", label: "Football" },
+  { slug: "scores", label: "Live Scores" },
+];
 
+function daysUntil(dateIso: string): number {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(now);
+  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+  const today = Date.UTC(get("year"), get("month") - 1, get("day"));
+  const [y, m, d] = dateIso.split("-").map(Number);
+  return Math.max(0, Math.round((Date.UTC(y, m - 1, d) - today) / 86400000));
+}
+
+async function upcoming(): Promise<{
+  game: GameWithResult;
+  sportLabel: string;
+  path: string;
+  days: number;
+} | null> {
+  const [vb, fb] = await Promise.all([
+    attachResults(VOLLEYBALL_2026),
+    attachResults(FOOTBALL_2026),
+  ]);
+  const candidates = [
+    { game: nextGame(vb), sportLabel: "Volleyball", path: "/volleyball" },
+    { game: nextGame(fb), sportLabel: "Football", path: "/football" },
+  ].filter((c): c is { game: GameWithResult; sportLabel: string; path: string } => c.game !== null);
+  if (candidates.length === 0) return null;
+  candidates.sort((a, b) => a.game.date.localeCompare(b.game.date));
+  const next = candidates[0];
+  return { ...next, days: daysUntil(next.game.date) };
+}
+
+export default async function Home() {
   let newsPosts: unknown[] = [];
   try {
     newsPosts = await getNewsPosts(3);
@@ -57,12 +90,38 @@ export default async function Home() {
     newsPosts = FALLBACK_NEWS;
   }
 
+  const next = await upcoming();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Nebrasketball",
     url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/shop?q={search_term}`,
+      },
+      "query-input": "required name=search_term",
+    },
   };
+
+  const matchupLine = next
+    ? next.game.homeAway === "away"
+      ? `Nebraska at ${next.game.opponent}`
+      : next.game.homeAway === "neutral"
+        ? `Nebraska vs ${next.game.opponent}`
+        : `${next.game.opponent} at Nebraska`
+    : null;
+
+  const dateLine = next
+    ? new Date(
+        Number(next.game.date.slice(0, 4)),
+        Number(next.game.date.slice(5, 7)) - 1,
+        Number(next.game.date.slice(8, 10))
+      ).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
+    : null;
 
   return (
     <>
@@ -71,283 +130,162 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* 1. ANNOUNCEMENT BANNER */}
-      <Link
-        href="/scores"
-        style={{
-          display: "block",
-          background: "var(--red)",
-          color: "white",
-          padding: "9px 16px",
-          textAlign: "center",
-          textDecoration: "none",
-          fontFamily: "var(--font-display)",
-          fontWeight: 700,
-          fontSize: 13,
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-        }}
-      >
-        ALL SPORTS LIVE — Schedules, scores & how to watch every Husker team →
-      </Link>
-
-      {/* 2. HERO SECTION */}
+      {/* HERO — the next Husker event is the front page */}
       <section
         style={{
           position: "relative",
           overflow: "hidden",
-          padding: "60px 20px 48px",
-          textAlign: "center",
           background:
-            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(208,0,0,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 60% at 75% 20%, rgba(208,0,0,0.16) 0%, transparent 65%)",
         }}
       >
-        {/* Court lines SVG */}
+        {/* off-center court lines */}
         <svg
           viewBox="0 0 1000 500"
           preserveAspectRatio="xMidYMid slice"
           style={{
             position: "absolute",
-            inset: 0,
-            width: "100%",
+            right: "-15%",
+            top: 0,
+            width: "70%",
             height: "100%",
-            opacity: 0.035,
+            opacity: 0.05,
             pointerEvents: "none",
-            zIndex: 0,
           }}
+          aria-hidden
         >
-          <circle cx={500} cy={250} r={120} stroke="white" strokeWidth={1.5} fill="none" />
-          <circle cx={500} cy={250} r={20} stroke="white" strokeWidth={1.5} fill="none" />
-          <line x1={500} y1={0} x2={500} y2={500} stroke="white" strokeWidth={1} />
-          <rect x={60} y={130} width={180} height={240} stroke="white" strokeWidth={1.2} fill="none" />
-          <rect x={760} y={130} width={180} height={240} stroke="white" strokeWidth={1.2} fill="none" />
-          <path d="M60 250 Q150 165 240 250" stroke="white" strokeWidth={1} fill="none" />
-          <path d="M760 250 Q850 165 940 250" stroke="white" strokeWidth={1} fill="none" />
+          <circle cx={700} cy={250} r={150} stroke="white" strokeWidth={1.5} fill="none" />
+          <circle cx={700} cy={250} r={26} stroke="white" strokeWidth={1.5} fill="none" />
+          <line x1={700} y1={0} x2={700} y2={500} stroke="white" strokeWidth={1} />
+          <path d="M420 250 Q560 120 700 250" stroke="white" strokeWidth={1} fill="none" />
         </svg>
 
-        {/* Hero content */}
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <Image
-            src="/logos/logo-stacked.png"
-            alt="Nebrasketball"
-            width={340}
-            height={119}
-            priority
-            unoptimized
-            style={{
-              display: "block",
-              margin: "0 auto 28px",
-              filter:
-                "drop-shadow(0 0 40px rgba(208,0,0,0.55)) drop-shadow(0 4px 20px rgba(0,0,0,0.9))",
-              maxWidth: "100%",
-              height: "auto",
-            }}
-          />
-
-          {/* Eyebrow pill */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 9,
-              border: "1px solid rgba(208,0,0,0.4)",
-              padding: "5px 16px",
-              marginBottom: 12,
-            }}
-          >
-            <span
-              className="pulse"
-              style={{
-                width: 6,
-                height: 6,
-                background: "var(--red)",
-                borderRadius: "50%",
-                display: "inline-block",
-              }}
-            />
-            <span
-              className="font-display"
-              style={{
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "var(--accent)",
-              }}
-            >
-              All Sports · Every Fan · GBR
-            </span>
-          </div>
-
-          <Disclaimer variant="short" />
-
-          <p
-            className="font-display"
-            style={{
-              fontWeight: 400,
-              fontSize: "clamp(13px, 2.4vw, 17px)",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              marginBottom: 30,
-              marginTop: 8,
-            }}
-          >
-            Every Nebraska Cornhuskers schedule, score & broadcast — all in one place
-          </p>
-
-          {/* CTA buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: 12,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <Link
-              href="/scores"
-              className="btn-angled font-display"
-              style={{
-                background: "var(--red)",
-                color: "white",
-                fontWeight: 800,
-                fontSize: 15,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                padding: "14px 36px",
-                textDecoration: "none",
-                display: "inline-block",
-              }}
-            >
-              Live Scores
-            </Link>
-            <Link
-              href="/news"
-              className="btn-angled font-display"
-              style={{
-                background: "transparent",
-                color: "white",
-                border: "1px solid rgba(255,255,255,0.22)",
-                fontWeight: 800,
-                fontSize: 15,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                padding: "14px 36px",
-                textDecoration: "none",
-                display: "inline-block",
-              }}
-            >
-              Latest News
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 2b. SPORTS HUB — schedules, scores, trackers */}
-      <section style={{ maxWidth: 1080, margin: "0 auto", padding: "10px 20px 44px" }}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 12,
+            maxWidth: 1080,
+            margin: "0 auto",
+            padding: "64px 20px 56px",
+            position: "relative",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 32,
+            justifyContent: "space-between",
           }}
         >
-          {[
-            {
-              href: "/basketball",
-              label: "Basketball",
-              blurb: "The Sweet 16 run was just the start. Schedule, scores & rankings.",
-              featured: true,
-            },
-            {
-              href: "/volleyball",
-              label: "Volleyball",
-              blurb: "2026 schedule, TV info & the attendance record tracker.",
-              featured: false,
-            },
-            {
-              href: "/football",
-              label: "Football",
-              blurb: "2026 schedule, kickoff times & how to watch every game.",
-              featured: false,
-            },
-            {
-              href: "/scores",
-              label: "Live Scores",
-              blurb: "Husker scoreboard across every sport, updated every minute.",
-              featured: false,
-            },
-          ].map((card) => (
-            <Link
-              key={card.href}
-              href={card.href}
-              className="news-card"
+          <div style={{ maxWidth: 620 }}>
+            <div className="section-label" style={{ marginBottom: 12 }}>
+              {next ? `Next up in Husker ${next.sportLabel}` : "The Unofficial Husker HQ"}
+            </div>
+            <h1
+              className="stat-hero"
               style={{
-                display: "block",
-                textDecoration: "none",
-                color: "var(--text)",
-                border: card.featured
-                  ? "1px solid rgba(208,0,0,0.5)"
-                  : "1px solid var(--border)",
-                borderTop: card.featured
-                  ? "3px solid var(--red)"
-                  : "3px solid transparent",
-                borderRadius: 4,
-                background: "var(--s1)",
-                padding: "16px 18px",
+                fontSize: "clamp(44px, 7.5vw, 88px)",
+                textTransform: "uppercase",
+                margin: 0,
               }}
             >
-              <div
-                className="font-display"
+              {next && next.days > 0
+                ? `${next.sportLabel} is back ${dateLine?.split(",")[1]?.trim() ?? next.game.date}`
+                : matchupLine ?? "Husker schedules, scores & records"}
+            </h1>
+            {next && (
+              <p style={{ color: "var(--muted)", fontSize: 17, lineHeight: 1.6, marginTop: 16 }}>
+                {matchupLine} — {dateLine}
+                {next.game.time ? ` at ${next.game.time}` : ", time TBA"}, {next.game.venue},{" "}
+                {next.game.city}.{" "}
+                {next.game.tv ? `Watch on ${next.game.tv}.` : "TV announcement lands here first."}
+              </p>
+            )}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24 }}>
+              <Link
+                href={next?.path ?? "/scores"}
+                className="btn-angled font-display"
                 style={{
+                  background: "var(--red)",
+                  color: "white",
                   fontWeight: 800,
-                  fontSize: 17,
+                  fontSize: 15,
                   textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  marginBottom: 6,
+                  letterSpacing: "0.08em",
+                  padding: "14px 30px",
+                  textDecoration: "none",
+                  display: "inline-block",
                 }}
               >
-                {card.label}
+                {next ? `${next.sportLabel} schedule & how to watch` : "Live scores"}
+              </Link>
+              <Link
+                href="/scores"
+                className="btn-outline font-display"
+                style={{
+                  background: "transparent",
+                  color: "white",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  fontWeight: 800,
+                  fontSize: 15,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  padding: "14px 30px",
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+              >
+                Live scoreboard
+              </Link>
+            </div>
+            <p style={{ marginTop: 22, marginBottom: 0 }}>
+              <Disclaimer variant="short" />
+            </p>
+          </div>
+
+          {/* The one huge thing: countdown */}
+          {next && next.days > 0 && (
+            <div style={{ textAlign: "center", flexShrink: 0 }}>
+              <div
+                className="stat-hero font-data"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(120px, 16vw, 220px)",
+                }}
+              >
+                {next.days}
               </div>
-              <p style={{ margin: 0, color: "var(--muted)", fontSize: 13, lineHeight: 1.5 }}>
-                {card.blurb}
-              </p>
-            </Link>
-          ))}
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.3em",
+                  fontSize: 16,
+                  color: "var(--accent)",
+                  marginTop: 4,
+                }}
+              >
+                Days to go
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* 3. STATS BAR */}
-      <div
-        style={{
-          display: "flex",
-          background: "var(--red)",
-          width: "100%",
-        }}
-      >
+      {/* STATS STRIP — the 2026 breakthrough */}
+      <div style={{ display: "flex", background: "var(--red)", width: "100%", flexWrap: "wrap" }}>
         {STATS.map((stat, i) => (
           <div
             key={stat.lbl}
             style={{
               flex: 1,
+              minWidth: 110,
               textAlign: "center",
               padding: "15px 6px",
               borderRight:
-                i < STATS.length - 1
-                  ? "1px solid rgba(255,255,255,0.15)"
-                  : "none",
+                i < STATS.length - 1 ? "1px solid rgba(255,255,255,0.15)" : "none",
             }}
           >
             <span
               className="font-display"
-              style={{
-                fontWeight: 900,
-                fontSize: 28,
-                lineHeight: 1,
-                color: "white",
-                display: "block",
-              }}
+              style={{ fontWeight: 900, fontSize: 28, lineHeight: 1, color: "white", display: "block" }}
             >
               {stat.num}
             </span>
@@ -369,122 +307,137 @@ export default async function Home() {
         ))}
       </div>
 
-      {/* 5. SPORTS GRID */}
-      <section style={{ background: "var(--black)", padding: "40px 20px" }}>
-        <span
-          className="font-display"
-          style={{
-            fontWeight: 700,
-            fontSize: 11,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "var(--red)",
-            display: "block",
-            marginBottom: 6,
-          }}
-        >
-          Browse by Sport
-        </span>
-        <h2
-          className="font-display"
-          style={{
-            fontWeight: 900,
-            fontSize: "clamp(28px, 5vw, 48px)",
-            textTransform: "uppercase",
-            lineHeight: 0.9,
-            margin: "0 0 18px",
-          }}
-        >
-          Every Husker Sport
-        </h2>
+      <div style={{ maxWidth: 1080, margin: "0 auto", padding: "48px 20px 0" }}>
+        {/* ASYMMETRIC FEATURES — basketball leads */}
+        <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+          <Link
+            href="/basketball"
+            className="news-card"
+            style={{
+              flex: "2 1 400px",
+              background: "var(--s1)",
+              border: "1px solid rgba(208,0,0,0.45)",
+              borderRadius: 6,
+              padding: "28px 30px",
+              textDecoration: "none",
+              color: "var(--text)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div className="ghost-num" style={{ top: -30, right: -10, fontSize: 200 }} aria-hidden>
+              16
+            </div>
+            <div className="section-label" style={{ marginBottom: 10 }}>
+              Basketball · This is Nebrasketball
+            </div>
+            <div
+              className="stat-hero"
+              style={{ fontSize: "clamp(30px, 4vw, 44px)", textTransform: "uppercase", maxWidth: 420 }}
+            >
+              The Sweet 16 rematch is coming to Lincoln
+            </div>
+            <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.6, maxWidth: 460, marginTop: 12 }}>
+              First tournament win ever. First Sweet 16. Now Iowa comes to
+              Pinnacle Bank Arena — and so do defending champs Michigan.
+              Schedule, roster and rankings, updated as they land.
+            </p>
+          </Link>
 
-        <div className="sports-grid-home">
-          <style>{`
-            .sports-grid-home {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 2px;
-            }
-            @media (max-width: 640px) {
-              .sports-grid-home {
-                grid-template-columns: repeat(2, 1fr);
-              }
-            }
-            .sport-card-home:hover .sport-emoji-home {
-              transform: scale(1.08);
-            }
-          `}</style>
-          {SPORTS.map((sport) => (
+          <div style={{ flex: "1 1 300px", display: "flex", flexDirection: "column", gap: 14 }}>
             <Link
-              key={sport.slug}
-              href={["football","basketball","volleyball"].includes(sport.slug) ? `/${sport.slug}` : "/scores"}
-              className="sport-card-home"
+              href="/volleyball/attendance"
+              className="news-card"
               style={{
-                aspectRatio: "4/3",
-                background: "var(--s2)",
-                position: "relative",
-                overflow: "hidden",
-                cursor: "pointer",
-                display: "flex",
+                flex: 1,
+                background: "var(--s1)",
+                border: "1px solid var(--border)",
+                borderRadius: 6,
+                padding: "20px 24px",
                 textDecoration: "none",
-                color: "inherit",
+                color: "var(--text)",
               }}
             >
-              <span
-                className="sport-emoji-home"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 56,
-                  fontWeight: 900,
-                  color: "var(--red)",
-                  transition: "transform 0.3s",
-                }}
-                aria-hidden="true"
-              >
-                {sport.name.replace("Nebraska ", "").charAt(0)}
-              </span>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(0deg, rgba(0,0,0,0.88) 0%, transparent 60%)",
-                }}
-              />
-              <div
-                style={{
-                  position: "relative",
-                  zIndex: 1,
-                  padding: "14px 16px",
-                  width: "100%",
-                  alignSelf: "flex-end",
-                }}
-              >
-                <span
-                  className="font-display"
-                  style={{
-                    fontWeight: 900,
-                    fontSize: 22,
-                    textTransform: "uppercase",
-                    color: "white",
-                    lineHeight: 1,
-                    display: "block",
-                  }}
-                >
-                  {sport.name.replace("Nebraska ", "")}
-                </span>
-              </div>
+              <div className="section-label" style={{ marginBottom: 8 }}>Volleyball</div>
+              <div className="stat-hero" style={{ fontSize: 40 }}>92,003</div>
+              <p style={{ color: "var(--muted)", fontSize: 14, margin: "8px 0 0", lineHeight: 1.5 }}>
+                The record book lives in Lincoln. Every mark the Huskers hold,
+                plus the full 2026 schedule and TV guide.
+              </p>
             </Link>
-          ))}
+            <Link
+              href="/football"
+              className="news-card"
+              style={{
+                flex: 1,
+                background: "var(--s1)",
+                border: "1px solid var(--border)",
+                borderRadius: 6,
+                padding: "20px 24px",
+                textDecoration: "none",
+                color: "var(--text)",
+              }}
+            >
+              <div className="section-label" style={{ marginBottom: 8 }}>Football</div>
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 800,
+                  fontSize: 22,
+                  textTransform: "uppercase",
+                  color: "var(--cream)",
+                }}
+              >
+                Sept 5 vs Ohio — the road to Black Friday
+              </div>
+              <p style={{ color: "var(--muted)", fontSize: 14, margin: "8px 0 0", lineHeight: 1.5 }}>
+                Every kickoff time and channel as the Big Ten announces them.
+              </p>
+            </Link>
+          </div>
         </div>
-      </section>
 
-      {/* 6. LATEST NEWS */}
-      <section style={{ background: "var(--s1)", padding: "40px 20px" }}>
+        {/* MEDIA */}
+        <HighlightsRail title="Latest Husker Video" limit={3} />
+        <XStrip />
+
+        {/* SPORT TILES */}
+        <section className="reveal" style={{ margin: "64px 0 0" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+              gap: 10,
+            }}
+          >
+            {SPORT_TILES.map((tile) => (
+              <Link
+                key={tile.slug}
+                href={`/${tile.slug}`}
+                className="news-card"
+                style={{
+                  background: "var(--s2)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 6,
+                  padding: "18px 20px",
+                  textDecoration: "none",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 800,
+                  fontSize: 18,
+                  textTransform: "uppercase",
+                  color: "var(--cream)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {tile.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* LATEST NEWS */}
+      <section style={{ maxWidth: 1080, margin: "64px auto 0", padding: "0 20px 56px" }}>
         <div
           style={{
             display: "flex",
@@ -493,34 +446,19 @@ export default async function Home() {
             marginBottom: 18,
           }}
         >
-          <div>
-            <span
-              className="font-display"
-              style={{
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "var(--red)",
-                display: "block",
-                marginBottom: 6,
-              }}
-            >
-              Nebraska Cornhuskers
-            </span>
-            <h2
-              className="font-display"
-              style={{
-                fontWeight: 900,
-                fontSize: "clamp(28px, 5vw, 48px)",
-                textTransform: "uppercase",
-                lineHeight: 0.9,
-                margin: 0,
-              }}
-            >
-              Latest News
-            </h2>
-          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              fontSize: 22,
+              fontWeight: 800,
+              color: "var(--cream)",
+              margin: 0,
+            }}
+          >
+            Latest News
+          </h2>
           <Link
             href="/news"
             className="font-display"
@@ -529,16 +467,14 @@ export default async function Home() {
               fontSize: 12,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "var(--red)",
+              color: "var(--accent)",
               textDecoration: "none",
-              borderBottom: "1px solid transparent",
               whiteSpace: "nowrap",
             }}
           >
             All News →
           </Link>
         </div>
-
         <div
           style={{
             display: "grid",
@@ -553,28 +489,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 7. EMAIL CAPTURE */}
-      <section
-        style={{
-          background: "var(--red)",
-          padding: "52px 20px",
-          textAlign: "center",
-        }}
-      >
-        <span
-          className="font-display"
-          style={{
-            fontWeight: 700,
-            fontSize: 11,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.65)",
-            display: "block",
-            marginBottom: 6,
-          }}
-        >
-          Stay in the Game
-        </span>
+      {/* EMAIL CAPTURE */}
+      <section style={{ background: "var(--red)", padding: "52px 20px", textAlign: "center" }}>
         <h2
           className="font-display"
           style={{
@@ -586,16 +502,10 @@ export default async function Home() {
             color: "white",
           }}
         >
-          Get Husker Drop Alerts
+          Never miss a Husker game
         </h2>
-        <p
-          style={{
-            color: "rgba(255,255,255,0.75)",
-            marginBottom: 24,
-            fontSize: 15,
-          }}
-        >
-          Schedules, scores and Husker news in your inbox — nothing else.
+        <p style={{ color: "rgba(255,255,255,0.78)", marginBottom: 24, fontSize: 15 }}>
+          Schedule changes, TV announcements and score recaps in your inbox — nothing else.
         </p>
         <EmailCapture />
       </section>

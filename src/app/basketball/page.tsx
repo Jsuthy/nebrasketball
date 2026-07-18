@@ -3,6 +3,7 @@ import Link from "next/link";
 import Disclaimer from "@/components/ui/Disclaimer";
 import EmailCapture from "@/components/ui/EmailCapture";
 import BasketballRankings from "@/components/schedule/BasketballRankings";
+import HighlightsRail from "@/components/media/HighlightsRail";
 import {
   ANNOUNCED_GAMES_2026_27,
   BIG_TEN_HOME,
@@ -301,6 +302,8 @@ export default function BasketballPage() {
           <OpponentList title="New Huskers" teams={INCOMING} />
         </div>
       </section>
+
+      <HighlightsRail sport="basketball" title="Latest Basketball Video" />
 
       <BasketballRankings />
 
