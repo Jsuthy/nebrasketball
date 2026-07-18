@@ -2,11 +2,18 @@
 // no quota. Embedding published YouTube videos is permitted by YouTube's
 // terms; the video itself stays on YouTube's servers.
 
-const FEEDS: Array<{ channelId: string; channel: string; sports: string[] }> = [
-  // Official Nebraska athletic department channel
-  { channelId: "UCzOjbO6SC1TGtlIu2BC5YNQ", channel: "Huskers Athletics", sports: ["all"] },
-  // Volleyball-focused channel
-  { channelId: "UCTy80DWfhwVJYG4iodp5Omw", channel: "Nebraska Volleyball", sports: ["volleyball"] },
+const FEEDS: Array<{
+  channelId: string;
+  channel: string;
+  sports: string[];
+  /** Multi-team channels (BTN) only count when the title names Nebraska. */
+  requireNebraska?: boolean;
+}> = [
+  // "Nebraska Huskers" — the ACTIVE official athletic department channel
+  // (@Huskers, posts daily; the older @HuskersAthletics channel is dormant)
+  { channelId: "UCMqWeJDl7yjblwPKVNo4XfA", channel: "Nebraska Huskers", sports: ["all"] },
+  // Big Ten Network — covers every league team, so Nebraska-filtered
+  { channelId: "UC4LeRw7pIZ_kseS4Krn_DQA", channel: "Big Ten Network", sports: ["all"], requireNebraska: true },
 ];
 
 export interface HuskerVideo {
@@ -30,9 +37,9 @@ function parseFeed(xml: string, channel: string): HuskerVideo[] {
 
 /**
  * Latest videos across the configured channels, newest first.
- * Pass a sport ("volleyball" | "football" | "basketball") to prefer
- * sport-matched channels/titles; falls back to everything if the filter
- * would leave the rail empty (offseason).
+ * With a sport filter, ONLY sport-matched videos are returned (a volleyball
+ * clip must never appear under a "basketball video" heading) — callers hide
+ * the rail when the list comes back empty. Without a filter, everything.
  */
 export async function latestHuskerVideos(
   sport?: string,
@@ -53,19 +60,23 @@ export async function latestHuskerVideos(
     })
   );
 
+  const isNebraska = (title: string) => /nebraska|husker/i.test(title);
+
   const all = results
     .flat()
+    .filter((v) => {
+      const feed = FEEDS.find((f) => f.channel === v.channel);
+      return !feed?.requireNebraska || isNebraska(v.title);
+    })
     .sort((a, b) => b.published.localeCompare(a.published));
 
-  if (sport) {
-    const matched = all.filter((v) => {
+  if (!sport) return all.slice(0, limit);
+
+  return all
+    .filter((v) => {
       const feed = FEEDS.find((f) => f.channel === v.channel);
-      return (
-        feed?.sports.includes(sport) ||
-        v.title.toLowerCase().includes(sport)
-      );
-    });
-    if (matched.length >= 2) return matched.slice(0, limit);
-  }
-  return all.slice(0, limit);
+      const dedicated = feed?.sports.includes(sport);
+      return dedicated || v.title.toLowerCase().includes(sport);
+    })
+    .slice(0, limit);
 }

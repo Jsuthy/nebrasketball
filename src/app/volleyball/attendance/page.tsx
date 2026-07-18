@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Disclaimer from "@/components/ui/Disclaimer";
 import EmailCapture from "@/components/ui/EmailCapture";
+import RelatedLinks, { relatedBreadcrumbJsonLd } from "@/components/ui/RelatedLinks";
+import { HeroBackdrop, PhotoCredit } from "@/components/media/PhotoHero";
+import { PHOTOS } from "@/lib/media/photos";
 
 export const metadata: Metadata = {
   title: "Nebraska Volleyball Attendance Records — The 92,003 World Record & Every Mark They Hold",
@@ -43,6 +46,14 @@ export default function AttendancePage() {
         overflow: "hidden",
       }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            relatedBreadcrumbJsonLd("/volleyball/attendance", "Nebraska Volleyball Attendance Records")
+          ),
+        }}
+      />
       {/* Ghost numeral watermark */}
       <div
         className="ghost-num"
@@ -52,7 +63,18 @@ export default function AttendancePage() {
         92,003
       </div>
 
-      <header style={{ marginBottom: 48, position: "relative", zIndex: 1 }}>
+      <header
+        style={{
+          marginBottom: 48,
+          position: "relative",
+          zIndex: 1,
+          padding: "34px 30px 26px",
+          borderRadius: 8,
+          overflow: "hidden",
+        }}
+      >
+        <HeroBackdrop photo={PHOTOS.volleyballDay} />
+        <div style={{ position: "relative", zIndex: 1 }}>
         <div className="section-label" style={{ marginBottom: 10 }}>
           The Record Book Belongs to Lincoln
         </div>
@@ -82,6 +104,10 @@ export default function AttendancePage() {
           they set new house records at opposing arenas nearly every time they
           go on the road.
         </p>
+        <div style={{ marginTop: 14 }}>
+          <PhotoCredit photo={PHOTOS.volleyballDay} />
+        </div>
+        </div>
       </header>
 
       {/* THE record — full-bleed numeral */}
@@ -221,6 +247,8 @@ export default function AttendancePage() {
         <h2 style={sectionTitle}>Follow the Record Chase</h2>
         <EmailCapture />
       </section>
+
+      <RelatedLinks currentPath="/volleyball/attendance" />
 
       <div style={{ marginTop: 48 }}>
         <Disclaimer variant="short" />

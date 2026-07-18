@@ -3,6 +3,9 @@ import Link from "next/link";
 import SchedulePageContent from "@/components/schedule/SchedulePageContent";
 import HighlightsRail from "@/components/media/HighlightsRail";
 import { VOLLEYBALL_2026 } from "@/lib/schedule/data";
+import { PHOTOS } from "@/lib/media/photos";
+import { PhotoCredit } from "@/components/media/PhotoHero";
+import Image from "next/image";
 
 export const revalidate = 1800;
 
@@ -32,6 +35,42 @@ const HOW_TO_WATCH = [
     body: "Husker Radio Network carries every match statewide, and live scores appear right on this page on match days.",
   },
 ];
+
+function DevaneyPhoto() {
+  const photo = PHOTOS.devaneyMatch;
+  return (
+    <section className="reveal" style={{ marginTop: 64 }}>
+      <div style={{ position: "relative", borderRadius: 8, overflow: "hidden", maxWidth: 720 }}>
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          width={photo.width}
+          height={photo.height}
+          style={{ width: "100%", height: "auto", display: "block" }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            padding: "24px 18px 10px",
+            background: "linear-gradient(0deg, rgba(10,10,10,0.85) 0%, transparent 100%)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            gap: 12,
+          }}
+        >
+          <span style={{ color: "var(--cream)", fontSize: 13, fontWeight: 600 }}>
+            The Devaney Center — sold out since 2001
+          </span>
+          <PhotoCredit photo={photo} />
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function AttendanceTeaser() {
   return (
@@ -84,6 +123,7 @@ export default function VolleyballPage() {
       gearSlug="volleyball"
       extraSection={
         <>
+          <DevaneyPhoto />
           <AttendanceTeaser />
           <HighlightsRail sport="volleyball" title="Latest Volleyball Video" />
         </>

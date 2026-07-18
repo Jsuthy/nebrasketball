@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SchedulePageContent from "@/components/schedule/SchedulePageContent";
 import HighlightsRail from "@/components/media/HighlightsRail";
 import { FOOTBALL_2026 } from "@/lib/schedule/data";
+import { PHOTOS } from "@/lib/media/photos";
 
 export const revalidate = 1800;
 
@@ -44,6 +45,7 @@ export default function FootballPage() {
       rankingsNote="Updates automatically when new rankings are released."
       gearSlug="football"
       extraSection={<HighlightsRail sport="football" title="Latest Football Video" />}
+      heroPhoto={PHOTOS.memorialStadium}
     />
   );
 }

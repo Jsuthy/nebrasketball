@@ -7,6 +7,9 @@ import ScheduleTable from "./ScheduleTable";
 import NextGameCard from "./NextGameCard";
 import Disclaimer from "@/components/ui/Disclaimer";
 import EmailCapture from "@/components/ui/EmailCapture";
+import RelatedLinks, { relatedBreadcrumbJsonLd } from "@/components/ui/RelatedLinks";
+import { HeroBackdrop, PhotoCredit } from "@/components/media/PhotoHero";
+import type { SitePhoto } from "@/lib/media/photos";
 
 const sectionTitle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
@@ -103,6 +106,7 @@ export default async function SchedulePageContent({
   rankingsNote,
   gearSlug,
   extraSection,
+  heroPhoto,
 }: {
   schedule: SeasonSchedule;
   pagePath: string;
@@ -113,6 +117,7 @@ export default async function SchedulePageContent({
   rankingsNote: string;
   gearSlug: string;
   extraSection?: React.ReactNode;
+  heroPhoto?: SitePhoto;
 }) {
   const games = await attachResults(schedule);
   const upNext = nextGame(games);
@@ -134,13 +139,30 @@ export default async function SchedulePageContent({
           __html: JSON.stringify(scheduleJsonLd(schedule, pagePath)),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(relatedBreadcrumbJsonLd(pagePath, heroTitle)),
+        }}
+      />
 
       {/* Ghost season numeral behind the hero */}
       <div className="ghost-num" style={{ top: -30, right: -20, fontSize: "clamp(160px, 28vw, 320px)" }} aria-hidden>
         {schedule.seasonLabel}
       </div>
 
-      <header style={{ marginBottom: 40, position: "relative", zIndex: 1 }}>
+      <header
+        style={{
+          marginBottom: 40,
+          position: "relative",
+          zIndex: 1,
+          ...(heroPhoto
+            ? { padding: "28px 28px 24px", borderRadius: 8, overflow: "hidden" }
+            : {}),
+        }}
+      >
+        {heroPhoto && <HeroBackdrop photo={heroPhoto} />}
+        <div style={{ position: "relative", zIndex: 1 }}>
         <div className="section-label" style={{ marginBottom: 10 }}>{heroKicker}</div>
         <h1
           className="stat-hero"
@@ -163,6 +185,12 @@ export default async function SchedulePageContent({
         >
           {intro}
         </p>
+        {heroPhoto && (
+          <div style={{ marginTop: 14 }}>
+            <PhotoCredit photo={heroPhoto} />
+          </div>
+        )}
+        </div>
       </header>
 
       {upNext && (
@@ -231,6 +259,8 @@ export default async function SchedulePageContent({
           </Link>
         </p>
       </section>
+
+      <RelatedLinks currentPath={pagePath} />
 
       <div style={{ marginTop: 48 }}>
         <Disclaimer variant="short" />

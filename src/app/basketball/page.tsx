@@ -4,6 +4,9 @@ import Disclaimer from "@/components/ui/Disclaimer";
 import EmailCapture from "@/components/ui/EmailCapture";
 import BasketballRankings from "@/components/schedule/BasketballRankings";
 import HighlightsRail from "@/components/media/HighlightsRail";
+import RelatedLinks, { relatedBreadcrumbJsonLd } from "@/components/ui/RelatedLinks";
+import { HeroBackdrop, PhotoCredit } from "@/components/media/PhotoHero";
+import { PHOTOS } from "@/lib/media/photos";
 import {
   ANNOUNCED_GAMES_2026_27,
   BIG_TEN_HOME,
@@ -121,10 +124,27 @@ export default function BasketballPage() {
         overflow: "hidden",
       }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(relatedBreadcrumbJsonLd("/basketball", "Nebraska Basketball HQ")),
+        }}
+      />
       <div className="ghost-num" style={{ top: -20, right: -10, fontSize: "clamp(180px, 30vw, 360px)" }} aria-hidden>
         16
       </div>
-      <header style={{ marginBottom: 40, position: "relative", zIndex: 1 }}>
+      <header
+        style={{
+          marginBottom: 40,
+          position: "relative",
+          zIndex: 1,
+          padding: "34px 30px 26px",
+          borderRadius: 8,
+          overflow: "hidden",
+        }}
+      >
+        <HeroBackdrop photo={PHOTOS.pinnacleBankArena} />
+        <div style={{ position: "relative", zIndex: 1 }}>
         <div className="section-label" style={{ marginBottom: 10 }}>
           This Is Nebrasketball
         </div>
@@ -146,6 +166,10 @@ export default function BasketballPage() {
           it&apos;s announced, live scores, rankings, and the roster chasing
           the next one.
         </p>
+        <div style={{ marginTop: 14 }}>
+          <PhotoCredit photo={PHOTOS.pinnacleBankArena} />
+        </div>
+        </div>
       </header>
 
       <section className="reveal" style={{ position: "relative", zIndex: 1 }}>
@@ -330,6 +354,8 @@ export default function BasketballPage() {
           </Link>
         </p>
       </section>
+
+      <RelatedLinks currentPath="/basketball" />
 
       <div style={{ marginTop: 40 }}>
         <Disclaimer variant="short" />
