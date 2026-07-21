@@ -7,13 +7,27 @@ import {
   countdownPost,
   finalScorePost,
   gamedayPost,
+  opponentSpotlightPost,
   rankingsPost,
+  scheduleFactPost,
+  scheduleFacts,
   startingSoonPost,
   weeklyPost,
 } from "./templates";
 
 const MAX_POSTS_PER_RUN = 4;
-const COUNTDOWN_DAYS = [42, 30, 21, 14, 7, 3, 1];
+
+/**
+ * Countdown cadence: every 10 days out past a month, every 5 days inside a
+ * month, then daily for the final two weeks as the season ramps.
+ */
+function isCountdownDay(days: number): boolean {
+  if (days <= 0) return false;
+  if (days <= 14) return true;
+  if (days <= 30) return days % 5 === 0;
+  if (days <= 100) return days % 10 === 0;
+  return false;
+}
 
 const SPORTS: Array<{ schedule: SeasonSchedule; path: string }> = [
   { schedule: VOLLEYBALL_2026, path: "/volleyball" },
@@ -74,6 +88,12 @@ function gameStartEpochMs(game: ScheduledGame): number | null {
   ).getTime();
 }
 
+/** Whole days since the epoch — a stable per-day counter for rotations. */
+function dayIndex(iso: string): number {
+  const [y, m, d] = iso.split("-").map(Number);
+  return Math.round(Date.UTC(y, m - 1, d) / 86400000);
+}
+
 function daysUntil(dateIso: string, todayIso: string): number {
   const [y1, m1, d1] = todayIso.split("-").map(Number);
   const [y2, m2, d2] = dateIso.split("-").map(Number);
@@ -93,7 +113,7 @@ export async function buildCandidates(ct: CentralTime): Promise<Candidate[]> {
     // Season countdown (morning window)
     if (ct.hour >= 9 && ct.hour <= 12 && opener) {
       const days = daysUntil(opener.date, ct.iso);
-      if (COUNTDOWN_DAYS.includes(days)) {
+      if (isCountdownDay(days)) {
         const key = `countdown:${sport}:${days}`;
         candidates.push({
           key,
@@ -205,6 +225,47 @@ export async function buildCandidates(ct: CentralTime): Promise<Candidate[]> {
           ),
         });
       }
+    }
+  }
+
+  // Evergreen rotation — fills off-season dead air. Deliberately last and
+  // deliberately conditional: it only speaks on days that produced no
+  // game-driven news, so it can never crowd out a real result or gameday.
+  // One post per day, alternating sports; content is computed from the
+  // schedule, never model-written, so it cannot invent a fact.
+  if (candidates.length === 0 && ct.hour >= 15 && ct.hour <= 18) {
+    const dayIdx = dayIndex(ct.iso);
+    const { schedule, path } = SPORTS[dayIdx % SPORTS.length];
+    const pool: Candidate[] = [];
+
+    const nextIdx = schedule.games.findIndex(
+      (g) => daysUntil(g.date, ct.iso) > 0
+    );
+    if (nextIdx !== -1) {
+      const game = schedule.games[nextIdx];
+      const key = `spotlight:${schedule.sport}:${game.date}`;
+      pool.push({
+        key,
+        text: opponentSpotlightPost(
+          key,
+          game,
+          nextIdx + 1,
+          schedule.games.length,
+          schedule.sportLabel,
+          path
+        ),
+      });
+    }
+    for (const fact of scheduleFacts(schedule)) {
+      const key = `fact:${schedule.sport}:${fact.id}`;
+      pool.push({ key, text: scheduleFactPost(key, fact, path) });
+    }
+
+    if (pool.length > 0) {
+      // Advances one slot per day for this sport. Content-based keys mean an
+      // exhausted pool goes quiet rather than repeating itself.
+      const slot = Math.floor(dayIdx / SPORTS.length) % pool.length;
+      candidates.push(pool[slot]);
     }
   }
 

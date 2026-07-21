@@ -13,7 +13,7 @@ export const VOLLEYBALL_2026: SeasonSchedule = {
     { date: "2026-08-30", time: "1:30 PM CT", opponent: "Texas", homeAway: "neutral", venue: "T-Mobile Arena", city: "Las Vegas, NV", tv: null, note: "Players Era Showcase" },
     { date: "2026-09-02", time: "7:00 PM CT", opponent: "South Dakota State", homeAway: "away", venue: "First Bank & Trust Arena", city: "Brookings, SD", tv: null, note: null },
     { date: "2026-09-04", time: null, opponent: "DePaul", homeAway: "away", venue: "Wintrust Arena", city: "Chicago, IL", tv: null, note: null },
-    { date: "2026-09-06", time: null, opponent: "Missouri", homeAway: "neutral", venue: "Wrigley Field", city: "Chicago, IL", tv: "FOX", note: "Big Ten/SEC Challenge — outdoors at Wrigley Field" },
+    { date: "2026-09-06", time: "6:00 PM CT", opponent: "Missouri", homeAway: "neutral", venue: "Wrigley Field", city: "Chicago, IL", tv: "FOX", note: "Big Ten/SEC Volleyball Challenge Week — outdoors at Wrigley Field" },
     { date: "2026-09-10", time: null, opponent: "New Mexico", homeAway: "home", venue: "Bob Devaney Sports Center", city: "Lincoln, NE", tv: null, note: "Home opener · Ameritas Players Challenge" },
     { date: "2026-09-11", time: null, opponent: "Baylor", homeAway: "home", venue: "Bob Devaney Sports Center", city: "Lincoln, NE", tv: null, note: "Ameritas Players Challenge" },
     { date: "2026-09-12", time: null, opponent: "Georgia Tech", homeAway: "home", venue: "Bob Devaney Sports Center", city: "Lincoln, NE", tv: null, note: "Ameritas Players Challenge" },
