@@ -33,9 +33,9 @@ export function gamedayPost(
   path: string
 ): string {
   const variants = [
-    `GAMEDAY. ${opponentLine(game)}.\n\n${whereToWatch(game)} · ${game.venue}, ${game.city}\n\nSchedule, TV and live score: ${SITE}${path}\n\nGBR`,
-    `It's gameday in Husker Nation.\n\n${opponentLine(game)}\n${whereToWatch(game)} · ${game.venue}\n\nHow to watch: ${SITE}${path}`,
-    `Nebraska ${sportLabel.toLowerCase()} is back today.\n\n${opponentLine(game)} · ${whereToWatch(game)}\n\nEverything you need: ${SITE}${path}\n\nGBR`,
+    `IT'S GAMEDAY. 🌽\n\n${opponentLine(game)}\n${whereToWatch(game)} · ${game.venue}\n\nHow to watch + live score: ${SITE}${path}\n\nGBR`,
+    `Wake up, Husker Nation — we've got one today.\n\n${opponentLine(game)}\n${whereToWatch(game)} · ${game.city}\n\n${SITE}${path}`,
+    `Nebraska ${sportLabel.toLowerCase()} is BACK today.\n\n${opponentLine(game)} · ${whereToWatch(game)}\n\nEverything you need: ${SITE}${path}\n\nGBR`,
   ];
   return variants[pickVariant(key, variants.length)];
 }
@@ -46,8 +46,8 @@ export function startingSoonPost(
   path: string
 ): string {
   const variants = [
-    `Almost time. ${opponentLine(game)} ${game.time ? `· ${game.time}` : ""}${game.tv ? ` · ${game.tv}` : ""}\n\nLive score: ${SITE}${path}`,
-    `${opponentLine(game)} — starting soon.${game.tv ? ` Watch on ${game.tv}.` : ""}\n\nFollow live: ${SITE}${path}\n\nGBR`,
+    `Almost tip. ${opponentLine(game)}${game.time ? ` · ${game.time}` : ""}${game.tv ? ` · ${game.tv}` : ""}\n\nGet loud. Live score: ${SITE}${path}`,
+    `Nearly go time — ${opponentLine(game)}.${game.tv ? ` On ${game.tv}.` : ""}\n\nFollow every point: ${SITE}${path}\n\nGBR`,
   ];
   return variants[pickVariant(key, variants.length)];
 }
@@ -61,15 +61,77 @@ export function finalScorePost(
   path: string
 ): string {
   const scoreline = `Nebraska ${nebraskaScore}, ${opponent} ${opponentScore}`;
+  const margin = Math.abs(nebraskaScore - opponentScore);
+  // Lively-but-factual: energy comes from real margin, not invented adjectives.
+  const blowout = won && nebraskaScore > 0 && margin >= Math.max(3, opponentScore);
+  const nailbiter = margin <= (nebraskaScore <= 3 ? 1 : 3);
+
   const winVariants = [
-    `FINAL: ${scoreline}.\n\nHuskers win. GBR.\n\nSeason schedule and results: ${SITE}${path}`,
-    `Huskers. Win.\n\nFINAL: ${scoreline}\n\n${SITE}${path}\n\nGBR`,
+    `HUSKERS WIN. 🌽\n\nFINAL — ${scoreline}\n\nGBR. Recap and next up: ${SITE}${path}`,
+    `That's a Nebraska W.\n\nFINAL — ${scoreline}\n\n${SITE}${path}`,
   ];
+  if (blowout) {
+    winVariants.push(
+      `Big Red, big statement.\n\nFINAL — ${scoreline}. Never in doubt.\n\n${SITE}${path}\n\nGBR`
+    );
+  }
+  if (nailbiter && won) {
+    winVariants.push(
+      `Huskers survive it.\n\nFINAL — ${scoreline}. Right to the wire.\n\n${SITE}${path}\n\nGBR`
+    );
+  }
   const lossVariants = [
-    `FINAL: ${scoreline}.\n\nOn to the next one.\n\nFull schedule: ${SITE}${path}`,
+    `Tough one in the books.\n\nFINAL — ${scoreline}.\n\nHeads up, Huskers. On to the next: ${SITE}${path}`,
+    nailbiter
+      ? `Came up just short.\n\nFINAL — ${scoreline}. Inches from it.\n\n${SITE}${path}`
+      : `FINAL — ${scoreline}.\n\nNot our night. Back to work.\n\n${SITE}${path}`,
   ];
   const variants = won ? winVariants : lossVariants;
   return variants[pickVariant(key, variants.length)];
+}
+
+/**
+ * In-game reaction fired while Nebraska's game reads "live". Deliberately a
+ * snapshot, not play-by-play: the caller keys each post to the current period
+ * so at most one goes out per set/quarter, which paces it naturally against
+ * the cron cadence. Every line is built from live feed fields — score, period,
+ * lead — so it can never claim a moment that did not happen.
+ */
+export function liveGamePost(
+  key: string,
+  opponent: string,
+  nebraskaScore: number,
+  opponentScore: number,
+  period: string,
+  sportLabel: string,
+  path: string
+): string {
+  const vb = sportLabel.toLowerCase().includes("volley");
+  const unit = vb ? "sets" : "points"; // volleyball feed score = sets won
+  const leading = nebraskaScore > opponentScore;
+  const tied = nebraskaScore === opponentScore;
+  const per = period && period.toLowerCase() !== "pre" ? period : "underway";
+
+  // Match just getting going — no meaningful score yet.
+  if (nebraskaScore === 0 && opponentScore === 0) {
+    const variants = [
+      `We're underway. Nebraska vs ${opponent}.\n\nFollow every point live: ${SITE}${path}\n\nGBR`,
+      `Huskers ball. Nebraska–${opponent} is live.\n\nLive score: ${SITE}${path}`,
+    ];
+    return variants[pickVariant(key, variants.length)];
+  }
+
+  const score = `Nebraska ${nebraskaScore}, ${opponent} ${opponentScore}`;
+  if (vb && leading && nebraskaScore >= 2) {
+    return `Big Red on the brink — up ${nebraskaScore}–${opponentScore} in ${unit}, a set from closing it out.\n\n${per} · Live: ${SITE}${path}\n\nGBR`;
+  }
+  if (leading) {
+    return `Huskers out front. ${score} (${per}).\n\nLive score: ${SITE}${path}\n\nGBR`;
+  }
+  if (tied) {
+    return `All square. ${score} (${per}). This one's a battle.\n\nLive: ${SITE}${path}`;
+  }
+  return `Huskers scrapping — ${score} (${per}). Long way to go.\n\nLive score: ${SITE}${path}\n\nGBR`;
 }
 
 export function rankingsPost(

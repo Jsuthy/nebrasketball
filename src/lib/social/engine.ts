@@ -7,6 +7,7 @@ import {
   countdownPost,
   finalScorePost,
   gamedayPost,
+  liveGamePost,
   opponentSpotlightPost,
   rankingsPost,
   scheduleFactPost,
@@ -181,10 +182,40 @@ export async function buildCandidates(ct: CentralTime): Promise<Candidate[]> {
         120
       );
       const match = findNebraskaGame(board);
-      if (!match || match.state !== "final") continue;
+      if (!match) continue;
 
       const nebraska = match.home.seo === "nebraska" ? match.home : match.away;
       const opponent = match.home.seo === "nebraska" ? match.away : match.home;
+
+      // Live reaction — only for today's game (offset 0). Keyed to the current
+      // period so at most one post goes out per set/quarter, which paces it
+      // against the cron without ever double-posting the same moment.
+      if (
+        offset === 0 &&
+        match.state === "live" &&
+        nebraska.score !== null &&
+        opponent.score !== null
+      ) {
+        const periodKey = (match.currentPeriod || "live")
+          .replace(/\W+/g, "-")
+          .toLowerCase();
+        const key = `live:${sport}:${dateIso}:${periodKey}`;
+        candidates.push({
+          key,
+          text: liveGamePost(
+            key,
+            opponent.name,
+            nebraska.score,
+            opponent.score,
+            match.currentPeriod,
+            sportLabel,
+            path
+          ),
+        });
+        continue;
+      }
+
+      if (match.state !== "final") continue;
       if (nebraska.score === null || opponent.score === null) continue;
 
       const key = `final:${sport}:${dateIso}`;
