@@ -23,8 +23,20 @@ export function xCredentialsPresent(): boolean {
   );
 }
 
-/** Posts a tweet. Returns the created tweet id. Throws on API errors. */
-export async function postTweet(text: string): Promise<string> {
+/** Extracts the numeric status id from an x.com/twitter.com status URL. */
+export function tweetIdFromUrl(url: string): string | null {
+  const match = url.match(/(?:x|twitter)\.com\/[^/]+\/status\/(\d+)/i);
+  return match ? match[1] : null;
+}
+
+/**
+ * Posts a tweet. Returns the created tweet id. Throws on API errors.
+ * Pass `quoteTweetId` to publish a quote-tweet (repost with comment).
+ */
+export async function postTweet(
+  text: string,
+  opts?: { quoteTweetId?: string }
+): Promise<string> {
   const consumerKey = process.env.X_API_KEY!;
   const consumerSecret = process.env.X_API_SECRET!;
   const accessToken = process.env.X_ACCESS_TOKEN!;
@@ -68,7 +80,10 @@ export async function postTweet(text: string): Promise<string> {
       Authorization: authHeader,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({
+      text,
+      ...(opts?.quoteTweetId ? { quote_tweet_id: opts.quoteTweetId } : {}),
+    }),
   });
 
   const body = await res.json().catch(() => ({}));
