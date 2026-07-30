@@ -79,6 +79,10 @@ export default function Footer() {
             Independent aggregator. Launched during Nebraska&apos;s historic 2026
             Sweet 16 run. GBR.
           </p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.28)", marginTop: 12 }}>
+            Also from us:{" "}
+            <a href="https://tariffstool.com" target="_blank" rel="noopener" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "underline" }}>US tariff &amp; customs duty lookup</a>
+          </p>
         </div>
 
         {/* Col 3 — Sports */}
