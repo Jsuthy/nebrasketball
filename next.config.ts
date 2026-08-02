@@ -12,19 +12,10 @@ const nextConfig: NextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
   },
-  async redirects() {
-    // Commerce routes retired 2026-07-17 (utility-hub strategy: monetize after
-    // traffic exists). Temporary 307s so the routes can come back cleanly.
-    return [
-      { source: "/shop", destination: "/", permanent: false },
-      { source: "/gear", destination: "/", permanent: false },
-      { source: "/gear/:path*", destination: "/", permanent: false },
-      { source: "/product/:path*", destination: "/", permanent: false },
-      { source: "/category/:path*", destination: "/", permanent: false },
-      { source: "/gift-guides", destination: "/", permanent: false },
-      { source: "/gift-guides/:path*", destination: "/", permanent: false },
-    ];
-  },
+  // Commerce routes retired 2026-07-17 (utility-hub strategy). They were 307ing
+  // to home, which kept them indexed and suppressed the domain's topical
+  // authority. They now return HTTP 410 Gone + noindex via src/proxy.ts so
+  // Google drops them cleanly.
   async headers() {
     return [
       {

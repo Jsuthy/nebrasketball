@@ -86,3 +86,69 @@ export function scheduleJsonLd(schedule: SeasonSchedule, pagePath: string) {
     ],
   };
 }
+
+/**
+ * FAQPage schema for a set of question/answer pairs — used on the per-game
+ * how-to-watch pages so the Q&A can qualify for FAQ rich results.
+ */
+export function faqJsonLd(questions: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+}
+
+/**
+ * A single SportsEvent (+ BroadcastEvent when TV is known) for one game, for
+ * the per-game how-to-watch page. Mirrors scheduleJsonLd's modeling: physical
+ * location with PostalAddress, TV on a linked BroadcastEvent.
+ */
+export function gameJsonLd(
+  game: ScheduledGame,
+  sportLabel: string,
+  pageUrl: string
+) {
+  const id = `${pageUrl}#event`;
+  const nebraska = {
+    "@type": "SportsTeam",
+    name: `Nebraska ${sportLabel}`,
+  };
+  const opponent = { "@type": "SportsTeam", name: game.opponent };
+
+  const event = {
+    "@type": "SportsEvent",
+    "@id": id,
+    name:
+      game.homeAway === "away"
+        ? `Nebraska at ${game.opponent}`
+        : game.homeAway === "neutral"
+          ? `Nebraska vs ${game.opponent}`
+          : `${game.opponent} at Nebraska`,
+    startDate: eventStartIso(game),
+    location: {
+      "@type": "Place",
+      name: game.venue,
+      address: postalAddress(game.city),
+    },
+    homeTeam: game.homeAway === "away" ? opponent : nebraska,
+    awayTeam: game.homeAway === "away" ? nebraska : opponent,
+    url: pageUrl,
+  };
+
+  const graph: object[] = [event];
+  if (game.tv) {
+    graph.push({
+      "@type": "BroadcastEvent",
+      isLiveBroadcast: true,
+      broadcastOfEvent: { "@id": id },
+      publishedOn: { "@type": "BroadcastService", name: game.tv },
+    });
+  }
+
+  return { "@context": "https://schema.org", "@graph": graph };
+}

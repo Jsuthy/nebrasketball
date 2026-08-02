@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { CATEGORIES, SPORTS, SITE_URL } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import seedProducts from "@/lib/seed-products.json";
+import { getAllGames } from "@/lib/schedule/games";
 
 const FALLBACK_NEWS_SLUGS = [
   "nebraska-basketball-sweet-16-2026",
@@ -66,6 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/volleyball`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
     { url: `${SITE_URL}/football`, lastModified: new Date(), changeFrequency: "daily", priority: 0.95 },
     { url: `${SITE_URL}/scores`, lastModified: new Date(), changeFrequency: "hourly", priority: 0.9 },
+    { url: `${SITE_URL}/how-to-watch`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE_URL}/volleyball/attendance`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${SITE_URL}/volleyball/roster`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${SITE_URL}/news`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
@@ -119,6 +121,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // Per-game how-to-watch pages (across all sports)
+  const howToWatchPages: MetadataRoute.Sitemap = getAllGames().map((g) => ({
+    url: `${SITE_URL}/how-to-watch/${g.slug}`,
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  }));
+
   return [
     ...staticPages,
     ...sportPages,
@@ -126,5 +135,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryPages,
     ...productPages,
     ...newsPages,
+    ...howToWatchPages,
   ];
 }

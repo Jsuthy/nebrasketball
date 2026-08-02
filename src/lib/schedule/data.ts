@@ -1,3 +1,4 @@
+import { ANNOUNCED_GAMES_2026_27 } from "./basketball-data";
 import type { SeasonSchedule } from "./types";
 
 // Schedules verified against huskers.com (2026 releases). Times/TV marked
@@ -58,4 +59,25 @@ export const FOOTBALL_2026: SeasonSchedule = {
     { date: "2026-11-21", time: null, opponent: "Ohio State", homeAway: "home", venue: "Memorial Stadium", city: "Lincoln, NE", tv: null, note: null },
     { date: "2026-11-27", time: "11:00 AM CT", opponent: "Iowa", homeAway: "away", venue: "Kinnick Stadium", city: "Iowa City, IA", tv: "CBS", note: "Black Friday · Heroes Game · regular-season finale" },
   ],
+};
+
+// 2026-27 men's basketball — only the games with an announced date (from
+// ANNOUNCED_GAMES_2026_27). Start times and TV are genuinely unannounced, so
+// they are null and update automatically once assigned. The undated Big Ten
+// games are intentionally excluded — with no date they cannot generate valid
+// per-game pages.
+export const BASKETBALL_2026: SeasonSchedule = {
+  sport: "basketball-men",
+  sportLabel: "Basketball",
+  seasonLabel: "2026-27",
+  games: ANNOUNCED_GAMES_2026_27.filter((g) => g.date !== null).map((g) => ({
+    date: g.date as string,
+    time: null,
+    opponent: g.opponent,
+    homeAway: g.homeAway,
+    venue: g.venue,
+    city: g.city,
+    tv: null,
+    note: g.note,
+  })),
 };

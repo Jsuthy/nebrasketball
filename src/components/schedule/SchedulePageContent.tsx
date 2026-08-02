@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getRankings, type NcaaSport } from "@/lib/ncaa/api";
 import { attachResults, nextGame, record } from "@/lib/schedule/results";
-import { scheduleJsonLd } from "@/lib/schedule/jsonld";
+import { scheduleJsonLd, faqJsonLd } from "@/lib/schedule/jsonld";
 import type { SeasonSchedule } from "@/lib/schedule/types";
 import ScheduleTable from "./ScheduleTable";
 import NextGameCard from "./NextGameCard";
@@ -123,6 +123,27 @@ export default async function SchedulePageContent({
   const upNext = nextGame(games);
   const seasonRecord = record(games);
 
+  // FAQPage schema drawn from the season props / how-to-watch guidance. Generic
+  // and accurate — no invented times or channels — so the Q&A can qualify for
+  // FAQ rich results without duplicating the per-game pages.
+  const watchGuidance =
+    howToWatch[0]?.body ??
+    `Nebraska ${schedule.sportLabel} games air across national and Big Ten networks, with live-TV streamers carrying the channels for cord-cutters.`;
+  const scheduleFaqs = [
+    {
+      q: `Where can I watch Nebraska ${schedule.sportLabel} in ${schedule.seasonLabel}?`,
+      a: watchGuidance,
+    },
+    {
+      q: `What TV channels carry Nebraska ${schedule.sportLabel}?`,
+      a: `Nebraska ${schedule.sportLabel} games air on Big Ten Network (BTN) and national networks such as FOX, FS1, CBS, NBC/Peacock, and ESPN, depending on the matchup. Each game's network is listed on the schedule above and updates automatically as broadcast assignments are announced.`,
+    },
+    {
+      q: "How do I find out what time Nebraska plays?",
+      a: `Start times appear in the full ${schedule.seasonLabel} schedule above and update automatically once the Big Ten confirms them — many are set only 6–12 days before the game. For a single game, open its "how to watch" page for the confirmed time, TV channel, and streaming options.`,
+    },
+  ];
+
   return (
     <div
       style={{
@@ -143,6 +164,12 @@ export default async function SchedulePageContent({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(relatedBreadcrumbJsonLd(pagePath, heroTitle)),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd(scheduleFaqs)),
         }}
       />
 
