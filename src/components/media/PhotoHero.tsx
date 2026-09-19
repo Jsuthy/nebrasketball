@@ -37,9 +37,9 @@ export function PhotoCredit({
       href={photo.creditUrl}
       target="_blank"
       rel="noopener noreferrer"
-      style={{
+        style={{
         fontSize: 10,
-        color: "rgba(255,255,255,0.35)",
+        color: "var(--muted)",
         textDecoration: "none",
         letterSpacing: "0.04em",
         ...style,

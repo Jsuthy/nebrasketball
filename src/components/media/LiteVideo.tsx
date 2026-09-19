@@ -91,7 +91,7 @@ export default function LiteVideo({
           right: 12,
           bottom: 10,
           textAlign: "left",
-          color: "var(--cream)",
+          color: "#fff",
           fontSize: 13,
           fontWeight: 600,
           lineHeight: 1.4,

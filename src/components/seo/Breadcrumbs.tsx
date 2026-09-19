@@ -62,7 +62,7 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
                   fontSize: 12,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
-                  color: "white",
+                  color: "var(--ink)",
                 }}
               >
                 {item.label}

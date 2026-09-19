@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className="font-body antialiased min-h-screen flex flex-col">
         <GoogleAnalytics />
         <Navbar />

@@ -62,7 +62,7 @@ function DevaneyPhoto() {
             gap: 12,
           }}
         >
-          <span style={{ color: "var(--cream)", fontSize: 13, fontWeight: 600 }}>
+          <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>
             The Devaney Center — sold out since 2001
           </span>
           <PhotoCredit photo={photo} />

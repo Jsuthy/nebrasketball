@@ -15,58 +15,12 @@ export default function NewsCard({ post }: { post: NewsItem }) {
   });
 
   return (
-    <Link
-      href={`/news/${post.slug}`}
-      className="news-card"
-      style={{
-        background: "var(--s1)",
-        borderTop: "3px solid var(--red)",
-        padding: 20,
-        cursor: "pointer",
-        display: "block",
-        textDecoration: "none",
-        color: "inherit",
-        transition: "background 0.2s",
-      }}
-    >
-      <div
-        className="font-display"
-        style={{
-          fontWeight: 600,
-          fontSize: 11,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: "var(--red)",
-          marginBottom: 7,
-        }}
-      >
-        {date}
+    <Link href={`/news/${post.slug}`} className="beat-story" style={{ gridTemplateColumns: "1fr" }}>
+      <div>
+        <div className="beat-sec">{date}</div>
+        <h3>{post.title}</h3>
+        {post.excerpt && <span>{post.excerpt}</span>}
       </div>
-      <div
-        className="font-display"
-        style={{
-          fontWeight: 800,
-          fontSize: 17,
-          textTransform: "uppercase",
-          lineHeight: 1.1,
-          marginBottom: 7,
-          color: "white",
-        }}
-      >
-        {post.title}
-      </div>
-      {post.excerpt && (
-        <p
-          style={{
-            fontSize: 12,
-            color: "var(--muted)",
-            lineHeight: 1.55,
-            margin: 0,
-          }}
-        >
-          {post.excerpt}
-        </p>
-      )}
     </Link>
   );
 }

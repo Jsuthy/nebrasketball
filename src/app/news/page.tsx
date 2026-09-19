@@ -28,7 +28,7 @@ export default async function NewsPage() {
   }
 
   return (
-    <section style={{ padding: "40px 20px" }}>
+    <section className="beat-wrap">
       <span
         className="font-display"
         style={{

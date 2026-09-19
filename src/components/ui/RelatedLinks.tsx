@@ -30,17 +30,7 @@ export default function RelatedLinks({ currentPath }: { currentPath: string }) {
   const links = ALL_LINKS.filter((l) => l.href !== currentPath);
   return (
     <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
-      <h2
-        style={{
-          fontFamily: "var(--font-display)",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          fontSize: 22,
-          fontWeight: 800,
-          color: "var(--cream)",
-          margin: "0 0 16px",
-        }}
-      >
+      <h2 className="beat-widget-title" style={{ marginBottom: 10 }}>
         More Husker HQ
       </h2>
       <div

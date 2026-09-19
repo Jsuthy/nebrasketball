@@ -8,22 +8,14 @@ interface DisclaimerProps {
 export default function Disclaimer({ variant }: DisclaimerProps) {
   if (variant === "full") {
     return (
-      <div
-        style={{
-          borderTop: "1px solid var(--border)",
-          padding: 16,
-          fontSize: 11,
-          lineHeight: 1.7,
-          color: "rgba(255,255,255,0.3)",
-        }}
-      >
+      <div className="beat-disclaimer">
         <p style={{ margin: "0 0 8px" }}>{SITE_DISCLAIMER}</p>
         <Link
           href="/legal"
           style={{
-            color: "rgba(255,255,255,0.4)",
+            color: "#5a564c",
             textDecoration: "underline",
-            fontSize: 11,
+            fontSize: 12,
           }}
         >
           Full legal terms, privacy policy & disclosures
@@ -36,42 +28,23 @@ export default function Disclaimer({ variant }: DisclaimerProps) {
     return (
       <p
         style={{
-          fontSize: 11,
-          color: "rgba(255,255,255,0.35)",
+          fontSize: 12,
+          color: "var(--muted)",
           lineHeight: 1.5,
           margin: "8px 0",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
         }}
       >
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 14,
-            height: 14,
-            borderRadius: "50%",
-            border: "1px solid rgba(255,255,255,0.2)",
-            fontSize: 9,
-            flexShrink: 0,
-          }}
-        >
-          i
-        </span>
         {AFFILIATE_DISCLOSURE}
       </p>
     );
   }
 
-  // short
   return (
     <p
       style={{
-        fontSize: 11,
-        color: "rgba(255,255,255,0.3)",
-        lineHeight: 1.5,
+        fontSize: 12,
+        color: "var(--muted)",
+        lineHeight: 1.55,
         margin: "8px 0",
       }}
     >

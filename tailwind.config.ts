@@ -5,21 +5,21 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Barlow Condensed", "sans-serif"],
-        body: ["Barlow", "sans-serif"],
-        data: ["Inter", "sans-serif"],
+        display: ["Libre Franklin", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        body: ["Libre Franklin", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        data: ["Libre Franklin", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
       },
       colors: {
         red: {
-          DEFAULT: "#D00000",
-          dark: "#9A0000",
+          DEFAULT: "#c8102e",
+          dark: "#9a0c23",
         },
-        accent: "#E57373",
-        cream: "#F5F1E7",
-        black: "#121212",
-        s1: "#1E1E1E",
-        s2: "#232323",
-        s3: "#282828",
+        accent: "#c8102e",
+        cream: "#1b1914",
+        black: "#f7f4ee",
+        s1: "#ffffff",
+        s2: "#fffdf8",
+        s3: "#f3efe6",
       },
     },
   },
