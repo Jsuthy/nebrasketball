@@ -12,4 +12,6 @@ Preview (static HTML, `noindex`):
 
 Shared: Barlow Condensed / Barlow / Literata+Newsreader; scarlet accent only; native affiliate + email modules; hard UNL independent disclaimer. No Inter/Geist, no glass nav, no 3-feature hero.
 
+Screenshots: `public/design-options/shots/` (home + how-to-watch, desktop + mobile).
+
 Do not merge as the live site. CoS/Jeff pick a direction, then a later PR restyles production.
