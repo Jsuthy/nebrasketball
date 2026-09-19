@@ -1,8 +1,6 @@
 import Link from "next/link";
 import type { GameWithResult } from "@/lib/schedule/types";
 
-// The one full-saturation scarlet moment on the page: a color-blocked
-// "next game" banner (brand color on a bounded element, white text ≥6:1).
 export default function NextGameCard({
   game,
   record,
@@ -22,101 +20,39 @@ export default function NextGameCard({
   });
   const hasRecord = record.wins + record.losses > 0;
   const matchupLabel =
-    game.homeAway === "away"
-      ? `at ${game.opponent}`
-      : `vs ${game.opponent}`;
+    game.homeAway === "away" ? `at ${game.opponent}` : `vs ${game.opponent}`;
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(120deg, var(--red) 0%, var(--red-dk) 100%)",
-        borderRadius: 8,
-        padding: "26px 30px",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 20,
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        clipPath:
-          "polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px))",
-      }}
-    >
-      <div>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 13,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.85)",
-            fontWeight: 700,
-            marginBottom: 8,
-          }}
-        >
-          Next {sportLabel} Match
-          {hasRecord && (
-            <span className="font-data" style={{ marginLeft: 10 }}>
-              {record.wins}–{record.losses}
-            </span>
-          )}
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(30px, 5vw, 46px)",
-            fontWeight: 900,
-            textTransform: "uppercase",
-            lineHeight: 0.95,
-            color: "#fff",
-          }}
-        >
-          Nebraska <span style={{ color: "var(--cream)" }}>{matchupLabel}</span>
-        </div>
-        <div
-          style={{
-            color: "rgba(255,255,255,0.85)",
-            fontSize: 14,
-            marginTop: 10,
-          }}
-        >
-          {dateLabel}
-          {game.time ? ` · ${game.time}` : " · Time TBA"} · {game.venue}, {game.city}
-        </div>
+    <div className="beat-widget">
+      <div className="beat-sec">
+        Next {sportLabel}
+        {hasRecord && (
+          <span className="font-data" style={{ marginLeft: 10, color: "var(--muted)" }}>
+            {record.wins}–{record.losses}
+          </span>
+        )}
       </div>
+      <h2
+        style={{
+          fontSize: "clamp(22px, 3vw, 28px)",
+          fontWeight: 800,
+          letterSpacing: "-0.03em",
+          margin: "6px 0 8px",
+          textTransform: "none",
+        }}
+      >
+        Nebraska {matchupLabel}
+      </h2>
+      <p style={{ margin: "0 0 10px", color: "var(--ink-2)", fontSize: 14 }}>
+        {dateLabel}
+        {game.time ? ` · ${game.time}` : " · Time TBA"} · {game.venue}, {game.city}
+      </p>
       {watchHref ? (
-        <Link
-          href={watchHref}
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 800,
-            fontSize: 16,
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            padding: "10px 20px",
-            background: "rgba(0,0,0,0.28)",
-            borderRadius: 4,
-            color: "#fff",
-            whiteSpace: "nowrap",
-            textDecoration: "none",
-          }}
-        >
+        <Link href={watchHref} className="beat-aff-link">
           {game.tv ? `How to watch · ${game.tv}` : "How to watch · TV TBA"}
         </Link>
       ) : (
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 800,
-            fontSize: 16,
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            padding: "10px 20px",
-            background: "rgba(0,0,0,0.28)",
-            borderRadius: 4,
-            color: "#fff",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--muted)" }}>
           {game.tv ? `TV: ${game.tv}` : "TV: TBA"}
         </div>
       )}

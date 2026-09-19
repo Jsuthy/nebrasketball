@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import Disclaimer from "@/components/ui/Disclaimer";
 
 const SPORTS_LINKS = [
   { href: "/basketball", label: "Basketball" },
   { href: "/how-to-watch", label: "How to Watch" },
   { href: "/scores", label: "Live Scores" },
+  { href: "/news", label: "Notes" },
 ];
 
 const OTHER_SPORTS_LINKS = [
@@ -18,86 +18,94 @@ const INFO_LINKS = [
   { href: "/legal", label: "Legal & Disclosures" },
   { href: "/legal#affiliate", label: "Affiliate Disclosure" },
   { href: "/legal#privacy", label: "Privacy Policy" },
-  { href: "/news", label: "News" },
 ];
 
 const colHeadingStyle: React.CSSProperties = {
-  fontFamily: "'Barlow Condensed', sans-serif",
-  fontWeight: 700,
-  fontSize: 12,
+  fontFamily: "var(--font-display)",
+  fontWeight: 800,
+  fontSize: 11,
   textTransform: "uppercase",
-  letterSpacing: "0.15em",
-  color: "rgba(255,255,255,0.45)",
-  marginBottom: 14,
+  letterSpacing: "0.1em",
+  color: "var(--muted)",
+  marginBottom: 10,
 };
 
 const linkStyle: React.CSSProperties = {
   display: "block",
   fontSize: 13,
-  color: "rgba(255,255,255,0.38)",
+  color: "var(--ink-2)",
   textDecoration: "none",
-  lineHeight: 2.1,
-  transition: "color 0.15s",
+  lineHeight: 1.9,
 };
 
 export default function Footer() {
   return (
     <footer
       style={{
-        background: "#050505",
-        borderTop: "1px solid var(--border)",
-        padding: "44px 20px 24px",
+        background: "var(--paper)",
+        borderTop: "1px solid var(--rule)",
+        padding: "28px 16px 20px",
       }}
     >
-      {/* Top grid */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "2fr 1fr 1fr 1fr",
-          gap: 40,
-          maxWidth: 960,
+          gap: 28,
+          maxWidth: 1100,
           margin: "0 auto",
         }}
         className="footer-grid"
       >
-        {/* Col 1 — Brand */}
         <div>
-          <Image
-            src="/logos/logo-wordmark.png"
-            alt="Nebrasketball"
-            height={26}
-            width={180}
-            unoptimized
-            style={{ height: 26, width: "auto", opacity: 0.82 }}
-          />
-          <p
+          <Link
+            href="/"
             style={{
-              fontSize: 12,
-              color: "rgba(255,255,255,0.28)",
-              maxWidth: 240,
-              lineHeight: 1.65,
-              marginTop: 14,
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              fontSize: 20,
+              textDecoration: "none",
+              color: "var(--ink)",
             }}
           >
-            The Husker fan’s scoreboard — every sport, every schedule, every score.
-            Independent aggregator. Launched during Nebraska&apos;s historic 2026
-            Sweet 16 run. GBR.
+            Nebrasketball
+          </Link>
+          <p
+            style={{
+              fontSize: 13,
+              color: "var(--muted)",
+              maxWidth: 280,
+              lineHeight: 1.55,
+              marginTop: 10,
+            }}
+          >
+            Independent beat desk for Nebraska men’s basketball — tip times, TV,
+            and scores. Football and volleyball stay in the rail.
           </p>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.28)", marginTop: 12 }}>
+          <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 10 }}>
             Also from us:{" "}
-            <a href="https://tariffstool.com" target="_blank" rel="noopener" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "underline" }}>US tariff &amp; customs duty lookup</a>
+            <a
+              href="https://tariffstool.com"
+              target="_blank"
+              rel="noopener"
+              style={{ color: "var(--ink-2)", textDecoration: "underline" }}
+            >
+              US tariff &amp; customs duty lookup
+            </a>
           </p>
         </div>
 
-        {/* Col 3 — Sports (men's basketball first; FB/VB kept as other sports) */}
         <div>
-          <h4 style={colHeadingStyle}>Sports</h4>
+          <h4 style={colHeadingStyle}>Hoops desk</h4>
           {SPORTS_LINKS.map((l) => (
             <Link key={l.href} href={l.href} style={linkStyle}>
               {l.label}
             </Link>
           ))}
-          <h4 style={{ ...colHeadingStyle, marginTop: 18 }}>Other sports</h4>
+        </div>
+
+        <div>
+          <h4 style={colHeadingStyle}>Other sports</h4>
           {OTHER_SPORTS_LINKS.map((l) => (
             <Link key={l.href} href={l.href} style={linkStyle}>
               {l.label}
@@ -105,7 +113,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Col 4 — Info */}
         <div>
           <h4 style={colHeadingStyle}>Info</h4>
           {INFO_LINKS.map((l) => (
@@ -116,17 +123,15 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Disclaimer */}
-      <div style={{ maxWidth: 960, margin: "24px auto 0" }}>
+      <div style={{ maxWidth: 1100, margin: "8px auto 0" }}>
         <Disclaimer variant="full" />
       </div>
 
-      {/* Responsive: single column on mobile */}
       <style>{`
         @media (max-width: 679px) {
           .footer-grid {
             grid-template-columns: 1fr !important;
-            gap: 28px !important;
+            gap: 22px !important;
           }
         }
       `}</style>

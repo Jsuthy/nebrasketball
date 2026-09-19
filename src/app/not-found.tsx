@@ -71,8 +71,8 @@ export default function NotFound() {
           className="btn-angled font-display"
           style={{
             background: "transparent",
-            color: "white",
-            border: "1px solid rgba(255,255,255,0.22)",
+            color: "var(--ink)",
+            border: "1px solid var(--rule)",
             fontWeight: 800,
             fontSize: 14,
             textTransform: "uppercase",

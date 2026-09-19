@@ -71,41 +71,13 @@ export async function generateMetadata({
   };
 }
 
-const sectionTitle: React.CSSProperties = {
-  fontFamily: "var(--font-display)",
-  textTransform: "uppercase",
-  letterSpacing: "0.08em",
-  fontSize: 22,
-  fontWeight: 800,
-  color: "var(--cream)",
-  margin: "0 0 16px",
-};
-
 function FactRow({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 16,
-        padding: "12px 0",
-        borderTop: "1px solid var(--border)",
-      }}
-    >
-      <span
-        style={{
-          fontFamily: "var(--font-display)",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          fontSize: 12,
-          color: "var(--faint)",
-        }}
-      >
+    <div className="beat-scoreline">
+      <span className="beat-sec" style={{ letterSpacing: "0.06em" }}>
         {label}
       </span>
-      <span style={{ color: "var(--cream)", fontSize: 14, fontWeight: 600, textAlign: "right" }}>
-        {value}
-      </span>
+      <span style={{ fontWeight: 700, textAlign: "right" }}>{value}</span>
     </div>
   );
 }
@@ -158,130 +130,70 @@ export default async function HowToWatchGamePage({
         ]}
       />
 
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 20px 72px" }}>
-        <header style={{ marginBottom: 32 }}>
-          <div className="section-label" style={{ marginBottom: 10 }}>
-            How to Watch · Nebraska {game.sportLabel} {game.seasonLabel}
-          </div>
-          <h1
-            className="stat-hero"
-            style={{
-              fontSize: "clamp(32px, 6vw, 56px)",
-              textTransform: "uppercase",
-              margin: 0,
-              lineHeight: 1.05,
-            }}
-          >
-            How to Watch Nebraska vs {game.opponent}
-          </h1>
-          <p
-            style={{
-              color: "var(--muted)",
-              fontSize: 17,
-              lineHeight: 1.6,
-              marginTop: 16,
-            }}
-          >
-            {matchupTitle(game)} · {formatLongDate(game.date)}
-            {game.time ? ` · ${game.time}` : ""}. {venueLine(game)}{" "}
-            {game.tv
-              ? `The game airs on ${game.tv}.`
-              : "The TV channel hasn't been announced yet — it updates here automatically."}
-          </p>
-        </header>
-
-        {/* Direct-answer fact box */}
-        <section
-          style={{
-            background: "var(--s1)",
-            border: "1px solid var(--border)",
-            borderRadius: 8,
-            padding: "8px 22px 18px",
-            marginBottom: 40,
-          }}
-        >
-          <FactRow label="Matchup" value={matchupTitle(game)} />
-          <FactRow label="Date" value={formatLongDate(game.date)} />
-          <FactRow label="Time (CT)" value={game.time ?? "TBA"} />
-          <FactRow label="TV / Stream" value={game.tv ?? "TBA"} />
-          <FactRow label="Site" value={homeAwayLabel(game)} />
-          <FactRow label="Venue" value={`${game.venue} — ${game.city}`} />
-          {game.note && <FactRow label="Note" value={game.note} />}
-        </section>
-
-        <WatchOptions game={game} />
-
-        <section style={{ marginBottom: 40 }}>
-          <h2 style={sectionTitle}>How to Watch &amp; Stream</h2>
-          <div style={{ display: "grid", gap: 12 }}>
-            {sections.map((item) => (
-              <div
-                key={item.label}
-                style={{
-                  background: "var(--s1)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 6,
-                  padding: "18px 22px",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 800,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    fontSize: 15,
-                    color: "var(--cream)",
-                    marginBottom: 6,
-                  }}
-                >
-                  {item.label}
+      <div className="beat-wrap" style={{ paddingTop: 8 }}>
+        <div className="beat-stack">
+          <div>
+            <article className="beat-lead">
+              <div className="beat-pad">
+                <div className="beat-sec">
+                  How to watch · Nebraska {game.sportLabel} {game.seasonLabel}
                 </div>
-                <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.65 }}>
-                  {item.body}
+                <h1>How to watch Nebraska vs {game.opponent}</h1>
+                <p>
+                  {matchupTitle(game)} · {formatLongDate(game.date)}
+                  {game.time ? ` · ${game.time}` : ""}. {venueLine(game)}{" "}
+                  {game.tv
+                    ? `The game airs on ${game.tv}.`
+                    : "The TV channel hasn't been announced yet — it updates here automatically."}
                 </p>
               </div>
-            ))}
-          </div>
-        </section>
+            </article>
 
-        <section style={{ marginBottom: 40 }}>
-          <h2 style={sectionTitle}>FAQ</h2>
-          <div style={{ display: "grid", gap: 12 }}>
-            {faqs.map((f) => (
-              <div
-                key={f.q}
-                style={{
-                  background: "var(--s1)",
-                  border: "1px solid var(--border)",
-                  borderLeft: "3px solid var(--red)",
-                  borderRadius: 4,
-                  padding: "16px 20px",
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: 15,
-                    color: "var(--cream)",
-                    marginBottom: 6,
-                  }}
-                >
-                  {f.q}
+            <div className="beat-widget" style={{ marginTop: 12 }}>
+              <h2>Game card</h2>
+              <FactRow label="Matchup" value={matchupTitle(game)} />
+              <FactRow label="Date" value={formatLongDate(game.date)} />
+              <FactRow label="Time (CT)" value={game.time ?? "TBA"} />
+              <FactRow label="TV / Stream" value={game.tv ?? "TBA"} />
+              <FactRow label="Site" value={homeAwayLabel(game)} />
+              <FactRow label="Venue" value={`${game.venue} — ${game.city}`} />
+              {game.note && <FactRow label="Note" value={game.note} />}
+            </div>
+
+            <div className="beat-river">
+              {sections.map((item) => (
+                <article key={item.label} className="beat-story" style={{ gridTemplateColumns: "1fr" }}>
+                  <div>
+                    <div className="beat-sec">{item.label}</div>
+                    <h3>{item.label}</h3>
+                    <span>{item.body}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <aside className="beat-rail">
+            <WatchOptions game={game} />
+            <div className="beat-widget">
+              <h2>FAQ</h2>
+              {faqs.map((f) => (
+                <div key={f.q} style={{ padding: "8px 0", borderBottom: "1px solid var(--rule-soft)" }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{f.q}</div>
+                  <p style={{ margin: 0, color: "var(--muted)", fontSize: 13, lineHeight: 1.5 }}>
+                    {f.a}
+                  </p>
                 </div>
-                <p style={{ margin: 0, color: "var(--muted)", fontSize: 14, lineHeight: 1.6 }}>
-                  {f.a}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </aside>
+        </div>
 
-        <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 14 }}>
-          <Link href={`/${game.sportSlug}`} style={{ color: "var(--red)", fontWeight: 600 }}>
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 14, marginTop: 16, fontWeight: 700 }}>
+          <Link href={`/${game.sportSlug}`} style={{ color: "var(--scarlet)" }}>
             ← Full Nebraska {game.sportLabel} {game.seasonLabel} schedule
           </Link>
-          <Link href="/how-to-watch" style={{ color: "var(--red)", fontWeight: 600 }}>
+          <Link href="/how-to-watch" style={{ color: "var(--scarlet)" }}>
             Does Nebraska play today? →
           </Link>
         </div>

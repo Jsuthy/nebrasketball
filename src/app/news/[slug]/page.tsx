@@ -245,13 +245,13 @@ export default async function NewsArticlePage({
         .article-prose {
           font-size: 15px;
           line-height: 1.8;
-          color: rgba(255,255,255,0.68);
+          color: var(--ink-2);
         }
         .article-prose p {
           margin-bottom: 16px;
         }
         .article-prose strong {
-          color: white;
+          color: var(--ink);
           font-weight: 600;
         }
         .article-prose a {

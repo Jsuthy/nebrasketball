@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getRankings, type NcaaSport } from "@/lib/ncaa/api";
 import { attachResults, nextGame, record } from "@/lib/schedule/results";
 import { getAllGames } from "@/lib/schedule/games";
@@ -9,17 +10,17 @@ import NextGameCard from "./NextGameCard";
 import Disclaimer from "@/components/ui/Disclaimer";
 import EmailCapture from "@/components/ui/EmailCapture";
 import RelatedLinks, { relatedBreadcrumbJsonLd } from "@/components/ui/RelatedLinks";
-import { HeroBackdrop, PhotoCredit } from "@/components/media/PhotoHero";
+import { PhotoCredit } from "@/components/media/PhotoHero";
 import type { SitePhoto } from "@/lib/media/photos";
 
 const sectionTitle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
-  fontSize: 22,
+  fontSize: 13,
   fontWeight: 800,
-  color: "var(--cream)",
-  margin: "0 0 16px",
+  color: "var(--ink)",
+  margin: "0 0 10px",
 };
 
 async function RankingsWidget({
@@ -82,7 +83,7 @@ async function RankingsWidget({
                 >
                   {row.rank}
                 </span>
-                <span style={{ color: isNebraska ? "var(--cream)" : "var(--text)" }}>
+                <span style={{ color: "var(--ink)" }}>
                   {row.team}
                 </span>
               </span>
@@ -154,15 +155,7 @@ export default async function SchedulePageContent({
   ];
 
   return (
-    <div
-      style={{
-        maxWidth: 1000,
-        margin: "0 auto",
-        padding: "56px 20px 72px",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+    <div className="beat-wrap">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -182,52 +175,29 @@ export default async function SchedulePageContent({
         }}
       />
 
-      {/* Ghost season numeral behind the hero */}
-      <div className="ghost-num" style={{ top: -30, right: -20, fontSize: "clamp(160px, 28vw, 320px)" }} aria-hidden>
-        {schedule.seasonLabel}
-      </div>
-
-      <header
-        style={{
-          marginBottom: 40,
-          position: "relative",
-          zIndex: 1,
-          ...(heroPhoto
-            ? { padding: "28px 28px 24px", borderRadius: 8, overflow: "hidden" }
-            : {}),
-        }}
-      >
-        {heroPhoto && <HeroBackdrop photo={heroPhoto} />}
-        <div style={{ position: "relative", zIndex: 1 }}>
-        <div className="section-label" style={{ marginBottom: 10 }}>{heroKicker}</div>
-        <h1
-          className="stat-hero"
-          style={{
-            fontSize: "clamp(46px, 8vw, 84px)",
-            textTransform: "uppercase",
-            margin: 0,
-          }}
-        >
-          {heroTitle}
-        </h1>
-        <p
-          style={{
-            color: "var(--muted)",
-            fontSize: 16,
-            lineHeight: 1.65,
-            maxWidth: 640,
-            marginTop: 18,
-          }}
-        >
-          {intro}
-        </p>
+      <article className="beat-lead" style={{ marginBottom: 16 }}>
         {heroPhoto && (
-          <div style={{ marginTop: 14 }}>
-            <PhotoCredit photo={heroPhoto} />
-          </div>
+          <Image
+            src={heroPhoto.src}
+            alt={heroPhoto.alt}
+            width={heroPhoto.width}
+            height={heroPhoto.height}
+            className="beat-lead-photo"
+            sizes="(max-width: 760px) 100vw, 1100px"
+            priority
+          />
         )}
+        <div className="beat-pad">
+          <div className="beat-sec">{heroKicker}</div>
+          <h1>{heroTitle}</h1>
+          <p>{intro}</p>
+          {heroPhoto && (
+            <div style={{ marginTop: 10 }}>
+              <PhotoCredit photo={heroPhoto} />
+            </div>
+          )}
         </div>
-      </header>
+      </article>
 
       {upNext && (
         <div className="reveal" style={{ marginBottom: 44, position: "relative", zIndex: 1 }}>
@@ -269,8 +239,8 @@ export default async function SchedulePageContent({
                   fontWeight: 800,
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
-                  fontSize: 15,
-                  color: "var(--cream)",
+                  fontSize: 13,
+                  color: "var(--scarlet)",
                   marginBottom: 6,
                 }}
               >

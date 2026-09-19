@@ -68,7 +68,7 @@ export default function AboutPage() {
         .prose-page p {
           font-size: 15px;
           line-height: 1.8;
-          color: rgba(255,255,255,0.68);
+          color: var(--ink-2);
           margin-bottom: 16px;
         }
       `}</style>

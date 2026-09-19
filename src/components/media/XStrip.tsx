@@ -48,7 +48,7 @@ export default async function XStrip() {
           letterSpacing: "0.08em",
           fontSize: 22,
           fontWeight: 800,
-          color: "var(--cream)",
+          color: "var(--ink)",
           margin: "0 0 16px",
         }}
       >
@@ -122,7 +122,7 @@ export default async function XStrip() {
               }}
             >
               <span>
-                <span style={{ fontWeight: 700, color: "var(--cream)" }}>
+                <span style={{ fontWeight: 700, color: "var(--ink)" }}>
                   @{account.handle}
                 </span>
                 <span style={{ display: "block", fontSize: 12, color: "var(--faint)" }}>
