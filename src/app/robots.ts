@@ -15,6 +15,7 @@ export default function robots(): MetadataRoute.Robots {
           "/product/",
           "/category/",
           "/gift-guides",
+          "/design-options-v2/",
         ],
       },
       { userAgent: "GPTBot", allow: "/" },
