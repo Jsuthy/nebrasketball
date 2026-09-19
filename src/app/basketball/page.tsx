@@ -347,7 +347,7 @@ export default function BasketballPage() {
         <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 14px" }}>
           Schedule releases, TV announcements, and score recaps in your inbox.
         </p>
-        <EmailCapture />
+        <EmailCapture source="basketball" />
         <p style={{ marginTop: 20, fontSize: 14 }}>
           <Link href="/gear/basketball" style={{ color: "var(--accent)", fontWeight: 600 }}>
             Shop Nebraska basketball gear →

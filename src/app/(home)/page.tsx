@@ -4,8 +4,9 @@ import { SITE_URL } from "@/lib/constants";
 import { buildMetaDescription } from "@/lib/compliance";
 import { getNewsPosts } from "@/lib/supabase/queries";
 import { FALLBACK_NEWS } from "@/lib/news-data";
-import { VOLLEYBALL_2026, FOOTBALL_2026 } from "@/lib/schedule/data";
-import { attachResults, nextGame } from "@/lib/schedule/results";
+import { BASKETBALL_2026 } from "@/lib/schedule/data";
+import { attachResults, nextGame, record } from "@/lib/schedule/results";
+import { getNextGameForSport } from "@/lib/schedule/games";
 import type { GameWithResult } from "@/lib/schedule/types";
 import NewsCard from "@/components/news/NewsCard";
 import EmailCapture from "@/components/ui/EmailCapture";
@@ -16,14 +17,14 @@ import XStrip from "@/components/media/XStrip";
 export const revalidate = 900;
 
 export const metadata: Metadata = {
-  title: "Nebrasketball — Husker Schedules, Live Scores & Records",
+  title: "Nebrasketball — Nebraska Men’s Basketball Command Center",
   description: buildMetaDescription(
-    "Nebraska Cornhuskers schedules, live scores, TV info and record tracking for basketball, volleyball and football — updated automatically all season. GBR."
+    "Next Nebraska men’s basketball game, how to watch, live scores, record and 2026-27 season HQ. Independent Husker fan site. GBR."
   ),
   openGraph: {
-    title: "Nebrasketball — Husker Schedules, Live Scores & Records",
+    title: "Nebrasketball — Nebraska Men’s Basketball Command Center",
     description: buildMetaDescription(
-      "Nebraska schedules, live scores, TV info and records — updated automatically all season."
+      "Next Nebraska men’s basketball game, how to watch, live scores and season HQ."
     ),
     url: SITE_URL,
     type: "website",
@@ -64,19 +65,30 @@ async function upcoming(): Promise<{
   sportLabel: string;
   path: string;
   days: number;
+  recordLine: string | null;
+  liveLine: string | null;
 } | null> {
-  const [vb, fb] = await Promise.all([
-    attachResults(VOLLEYBALL_2026),
-    attachResults(FOOTBALL_2026),
-  ]);
-  const candidates = [
-    { game: nextGame(vb), sportLabel: "Volleyball", path: "/volleyball" },
-    { game: nextGame(fb), sportLabel: "Football", path: "/football" },
-  ].filter((c): c is { game: GameWithResult; sportLabel: string; path: string } => c.game !== null);
-  if (candidates.length === 0) return null;
-  candidates.sort((a, b) => a.game.date.localeCompare(b.game.date));
-  const next = candidates[0];
-  return { ...next, days: daysUntil(next.game.date) };
+  const bb = await attachResults(BASKETBALL_2026);
+  const game = nextGame(bb);
+  const watch = getNextGameForSport("basketball");
+  const seasonRecord = record(bb);
+  const live = bb.find((g) => g.result?.state === "live") ?? null;
+  const recordLine =
+    seasonRecord.wins + seasonRecord.losses > 0
+      ? `${seasonRecord.wins}–${seasonRecord.losses}`
+      : null;
+  const liveLine = live
+    ? `Live ${live.result?.nebraskaScore ?? ""}–${live.result?.opponentScore ?? ""} ${live.opponent}${live.result?.currentPeriod ? ` · ${live.result.currentPeriod}` : ""}`
+    : null;
+  if (!game) return null;
+  return {
+    game,
+    sportLabel: "Basketball",
+    path: watch ? `/how-to-watch/${watch.slug}` : "/how-to-watch",
+    days: daysUntil(game.date),
+    recordLine,
+    liveLine,
+  };
 }
 
 export default async function Home() {
@@ -101,7 +113,7 @@ export default async function Home() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/shop?q={search_term}`,
+        urlTemplate: `${SITE_URL}/how-to-watch`,
       },
       "query-input": "required name=search_term",
     },
@@ -175,7 +187,7 @@ export default async function Home() {
         >
           <div style={{ maxWidth: 620 }}>
             <div className="section-label" style={{ marginBottom: 12 }}>
-              {next ? `Next up in Husker ${next.sportLabel}` : "The Unofficial Husker HQ"}
+              {next ? `Next up in Husker ${next.sportLabel}` : "Nebraska Men’s Basketball"}
             </div>
             <h1
               className="stat-hero"
@@ -187,7 +199,7 @@ export default async function Home() {
             >
               {next && next.days > 0
                 ? `${next.sportLabel} is back ${dateLine?.split(",")[1]?.trim() ?? next.game.date}`
-                : matchupLine ?? "Husker schedules, scores & records"}
+                : matchupLine ?? "Nebraska men’s basketball command center"}
             </h1>
             {next && (
               <p style={{ color: "var(--muted)", fontSize: 17, lineHeight: 1.6, marginTop: 16 }}>
@@ -195,11 +207,13 @@ export default async function Home() {
                 {next.game.time ? ` at ${next.game.time}` : ", time TBA"}, {next.game.venue},{" "}
                 {next.game.city}.{" "}
                 {next.game.tv ? `Watch on ${next.game.tv}.` : "TV announcement lands here first."}
+                {next.liveLine ? ` ${next.liveLine}.` : ""}
+                {next.recordLine ? ` Season record ${next.recordLine}.` : ""}
               </p>
             )}
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24 }}>
               <Link
-                href={next?.path ?? "/scores"}
+                href={next?.path ?? "/how-to-watch"}
                 className="btn-angled font-display"
                 style={{
                   background: "var(--red)",
@@ -213,7 +227,7 @@ export default async function Home() {
                   display: "inline-block",
                 }}
               >
-                {next ? `${next.sportLabel} schedule & how to watch` : "Live scores"}
+                {next ? `${next.sportLabel} schedule & how to watch` : "How to watch"}
               </Link>
               <Link
                 href="/scores"
@@ -507,7 +521,7 @@ export default async function Home() {
         <p style={{ color: "rgba(255,255,255,0.78)", marginBottom: 24, fontSize: 15 }}>
           Schedule changes, TV announcements and score recaps in your inbox — nothing else.
         </p>
-        <EmailCapture />
+        <EmailCapture source="home" />
       </section>
     </>
   );

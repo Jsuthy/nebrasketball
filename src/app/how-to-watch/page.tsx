@@ -2,9 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/constants";
 import Breadcrumbs from "@/components/seo/Breadcrumbs";
+import WatchOptions from "@/components/watch/WatchOptions";
+import EmailCapture from "@/components/ui/EmailCapture";
+import Disclaimer from "@/components/ui/Disclaimer";
 import {
   getTodaysGames,
   getNextGame,
+  getNextGameForSport,
   getAllGames,
   todayCT,
   formatLongDate,
@@ -18,12 +22,12 @@ export const revalidate = 1800;
 export const metadata: Metadata = {
   title: "Does Nebraska Play Today? — TV Channel, Time & How to Watch",
   description:
-    "Does Nebraska play today? Instant yes/no for every Husker sport — volleyball and football — with the TV channel, start time, and how to watch. Updated automatically.",
+    "Does Nebraska play today? Men’s basketball first — TV channel, start time, and streaming options for every Husker game. Affiliate links — we may earn a commission. Independent fan site. Not affiliated with UNL or NCAA.",
   alternates: { canonical: "/how-to-watch" },
   openGraph: {
     title: "Does Nebraska Play Today? — TV Channel, Time & How to Watch",
     description:
-      "Every Nebraska game across all sports: does Nebraska play today, what channel, what time, and where to watch.",
+      "Nebraska men’s basketball how to watch, plus volleyball and football: channel, time, and streaming options.",
     url: `${SITE_URL}/how-to-watch`,
     type: "website",
   },
@@ -91,11 +95,24 @@ export default function HowToWatchHubPage() {
   const todaysGames = getTodaysGames();
   const playingToday = todaysGames.length > 0;
   const nextGame = getNextGame();
+  const nextBasketball = getNextGameForSport("basketball");
   const today = todayCT();
+  const featuredNext = nextBasketball ?? nextGame;
+  const featuredWatch = playingToday
+    ? todaysGames.find((g) => g.sportSlug === "basketball") ?? todaysGames[0]
+    : featuredNext;
 
   // Upcoming across all sports (excluding anything already shown as "today").
+  // Men's basketball stays first when dates tie.
   const upcoming = getAllGames()
     .filter((g) => g.date >= today && !todaysGames.includes(g))
+    .sort((a, b) => {
+      const dateCmp = a.date.localeCompare(b.date);
+      if (dateCmp !== 0) return dateCmp;
+      if (a.sportSlug === "basketball" && b.sportSlug !== "basketball") return -1;
+      if (b.sportSlug === "basketball" && a.sportSlug !== "basketball") return 1;
+      return 0;
+    })
     .slice(0, 10);
 
   const answer = playingToday
@@ -111,7 +128,7 @@ export default function HowToWatchHubPage() {
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 20px 72px" }}>
         <header style={{ marginBottom: 32 }}>
           <div className="section-label" style={{ marginBottom: 10 }}>
-            Go Big Red · Every Sport
+            Go Big Red · Men’s Basketball First
           </div>
           <h1
             className="stat-hero"
@@ -146,16 +163,19 @@ export default function HowToWatchHubPage() {
             </div>
           </section>
         ) : (
-          nextGame && (
+          featuredNext && (
             <section style={{ marginBottom: 44 }}>
               <h2 style={sectionTitle}>Next Up</h2>
               <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 14px" }}>
-                Nebraska&apos;s next game is {formatLongDate(nextGame.date)}.
+                Nebraska&apos;s next {featuredNext.sportLabel.toLowerCase()} game is{" "}
+                {formatLongDate(featuredNext.date)}.
               </p>
-              <GameCard game={nextGame} featured />
+              <GameCard game={featuredNext} featured />
             </section>
           )
         )}
+
+        {featuredWatch && <WatchOptions game={featuredWatch} />}
 
         {upcoming.length > 0 && (
           <section style={{ marginBottom: 40 }}>
@@ -169,12 +189,27 @@ export default function HowToWatchHubPage() {
         )}
 
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 14 }}>
+          <Link href="/basketball" style={{ color: "var(--red)", fontWeight: 600 }}>
+            Nebraska Basketball HQ →
+          </Link>
           <Link href="/volleyball" style={{ color: "var(--red)", fontWeight: 600 }}>
             Nebraska Volleyball schedule →
           </Link>
           <Link href="/football" style={{ color: "var(--red)", fontWeight: 600 }}>
             Nebraska Football schedule →
           </Link>
+        </div>
+
+        <section style={{ marginTop: 48 }}>
+          <h2 style={sectionTitle}>Never Miss a Game</h2>
+          <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 16px" }}>
+            Schedule changes, TV announcements, and score recaps in your inbox.
+          </p>
+          <EmailCapture source="how-to-watch" />
+        </section>
+
+        <div style={{ marginTop: 32 }}>
+          <Disclaimer variant="short" />
         </div>
       </div>
     </>

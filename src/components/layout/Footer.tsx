@@ -3,10 +3,14 @@ import Image from "next/image";
 import Disclaimer from "@/components/ui/Disclaimer";
 
 const SPORTS_LINKS = [
-  { href: "/football", label: "Football" },
   { href: "/basketball", label: "Basketball" },
-  { href: "/volleyball", label: "Volleyball" },
+  { href: "/how-to-watch", label: "How to Watch" },
   { href: "/scores", label: "Live Scores" },
+];
+
+const OTHER_SPORTS_LINKS = [
+  { href: "/football", label: "Football" },
+  { href: "/volleyball", label: "Volleyball" },
 ];
 
 const INFO_LINKS = [
@@ -85,10 +89,16 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Col 3 — Sports */}
+        {/* Col 3 — Sports (men's basketball first; FB/VB kept as other sports) */}
         <div>
           <h4 style={colHeadingStyle}>Sports</h4>
           {SPORTS_LINKS.map((l) => (
+            <Link key={l.href} href={l.href} style={linkStyle}>
+              {l.label}
+            </Link>
+          ))}
+          <h4 style={{ ...colHeadingStyle, marginTop: 18 }}>Other sports</h4>
+          {OTHER_SPORTS_LINKS.map((l) => (
             <Link key={l.href} href={l.href} style={linkStyle}>
               {l.label}
             </Link>

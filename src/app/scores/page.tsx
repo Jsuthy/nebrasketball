@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 };
 
 const SPORTS: Array<{ sport: NcaaSport; label: string }> = [
-  { sport: "volleyball-women", label: "Volleyball" },
-  { sport: "football", label: "Football" },
   { sport: "basketball-men", label: "Basketball" },
+  { sport: "football", label: "Football" },
+  { sport: "volleyball-women", label: "Volleyball" },
 ];
 
 function centralToday(): { year: number; month: number; day: number } {
@@ -59,14 +59,22 @@ export default async function ScoresPage() {
           Husker Scoreboard
         </h1>
         <p style={{ color: "var(--muted)", fontSize: 15, marginTop: 10 }}>
-          Today&apos;s Nebraska games plus ranked matchups in volleyball,
-          football, and basketball.{" "}
-          <Link href="/volleyball" style={{ color: "var(--accent)" }}>
-            Volleyball schedule
+          Today&apos;s Nebraska games plus ranked matchups in basketball,
+          football, and volleyball.{" "}
+          <Link href="/basketball" style={{ color: "var(--accent)" }}>
+            Basketball HQ
+          </Link>{" "}
+          ·{" "}
+          <Link href="/how-to-watch" style={{ color: "var(--accent)" }}>
+            How to watch
           </Link>{" "}
           ·{" "}
           <Link href="/football" style={{ color: "var(--accent)" }}>
             Football schedule
+          </Link>{" "}
+          ·{" "}
+          <Link href="/volleyball" style={{ color: "var(--accent)" }}>
+            Volleyball schedule
           </Link>
         </p>
       </header>

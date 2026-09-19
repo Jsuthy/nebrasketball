@@ -1,3 +1,7 @@
+Independent Nebraska Cornhuskers **men’s basketball** fan site (not affiliated with UNL or NCAA).
+
+Optional env: set `NEXT_PUBLIC_GA_MEASUREMENT_ID` (or legacy `NEXT_PUBLIC_GA_ID`) to a real GA4 `G-` ID to load gtag client-side. Leave empty otherwise — do not invent an ID. See `.env.example`.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

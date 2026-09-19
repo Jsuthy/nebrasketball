@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import GoogleAnalytics from "@/components/seo/GoogleAnalytics";
 import { buildMetaDescription } from "@/lib/compliance";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Nebrasketball",
-    default: "Nebrasketball — Nebraska Cornhuskers Gear for Every Sport",
+    default: "Nebrasketball — Nebraska Men’s Basketball Command Center",
   },
   description: buildMetaDescription(
-    "Shop every Nebraska Cornhuskers gear drop from Amazon, eBay, Etsy and Fanatics — all sports, all in one place. GBR."
+    "Next Nebraska men’s basketball game, how to watch, live scores and 2026-27 season HQ. Independent Husker fan site. GBR."
   ),
   keywords: [
-    "nebraska cornhuskers gear",
-    "nebraska football gear",
-    "nebraska basketball gear",
-    "nebraska volleyball gear",
-    "husker apparel",
-    "cornhuskers merchandise",
+    "nebraska basketball",
+    "how to watch nebraska basketball",
+    "nebraska cornhuskers scores",
+    "husker basketball schedule",
+    "nebrasketball",
   ],
   openGraph: {
     type: "website",
@@ -41,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="font-body antialiased min-h-screen flex flex-col">
+        <GoogleAnalytics />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

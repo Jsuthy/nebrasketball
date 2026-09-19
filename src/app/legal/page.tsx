@@ -145,7 +145,8 @@ export default function LegalPage() {
         <strong>What we collect:</strong> When you click a &ldquo;View
         Deal&rdquo; button, we log an anonymous click event (product ID, page,
         referrer, user agent). If you subscribe to our email list, we store your
-        email address for gear alerts only.
+        email address for game-week alerts (schedule, TV, and scores). We do
+        not sell your address.
       </p>
       <p>
         <strong>What we don&apos;t collect:</strong> Names, physical addresses,
