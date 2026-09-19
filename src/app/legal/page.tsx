@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { SITE_DISCLAIMER } from "@/lib/compliance";
 import Disclaimer from "@/components/ui/Disclaimer";
 
 export const metadata: Metadata = {

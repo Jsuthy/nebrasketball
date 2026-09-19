@@ -1,7 +1,7 @@
 export const SITE_NAME = "Nebrasketball";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nebrasketball.com";
 export const SITE_DESCRIPTION =
-  "Nebraska men's basketball next game, how to watch, live scores and season HQ — independent Husker fan site.";)
+  "Nebraska men's basketball next game, how to watch, live scores and season HQ — independent Husker fan site.";
 
 export const CATEGORIES = [
   {
