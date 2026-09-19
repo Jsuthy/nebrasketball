@@ -4,9 +4,9 @@ import { getScoreboard, type NcaaSport, type ScoreboardGame } from "@/lib/ncaa/a
 export const revalidate = 0;
 
 const SPORTS: Array<{ sport: NcaaSport; label: string }> = [
-  { sport: "volleyball-women", label: "Volleyball" },
-  { sport: "football", label: "Football" },
   { sport: "basketball-men", label: "Basketball" },
+  { sport: "football", label: "Football" },
+  { sport: "volleyball-women", label: "Volleyball" },
 ];
 
 function centralToday(): { year: number; month: number; day: number } {

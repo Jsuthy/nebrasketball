@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getRankings, type NcaaSport } from "@/lib/ncaa/api";
 import { attachResults, nextGame, record } from "@/lib/schedule/results";
+import { getAllGames } from "@/lib/schedule/games";
 import { scheduleJsonLd, faqJsonLd } from "@/lib/schedule/jsonld";
 import type { SeasonSchedule } from "@/lib/schedule/types";
 import ScheduleTable from "./ScheduleTable";
@@ -122,6 +123,14 @@ export default async function SchedulePageContent({
   const games = await attachResults(schedule);
   const upNext = nextGame(games);
   const seasonRecord = record(games);
+  const watchGame = upNext
+    ? getAllGames().find(
+        (g) =>
+          g.date === upNext.date &&
+          g.opponent === upNext.opponent &&
+          g.sportLabel === schedule.sportLabel
+      )
+    : null;
 
   // FAQPage schema drawn from the season props / how-to-watch guidance. Generic
   // and accurate — no invented times or channels — so the Q&A can qualify for
@@ -222,7 +231,12 @@ export default async function SchedulePageContent({
 
       {upNext && (
         <div className="reveal" style={{ marginBottom: 44, position: "relative", zIndex: 1 }}>
-          <NextGameCard game={upNext} record={seasonRecord} sportLabel={schedule.sportLabel} />
+          <NextGameCard
+            game={upNext}
+            record={seasonRecord}
+            sportLabel={schedule.sportLabel}
+            watchHref={watchGame ? `/how-to-watch/${watchGame.slug}` : "/how-to-watch"}
+          />
         </div>
       )}
 
@@ -279,7 +293,7 @@ export default async function SchedulePageContent({
         <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 16px" }}>
           Get schedule changes, TV announcements, and score recaps in your inbox.
         </p>
-        <EmailCapture />
+        <EmailCapture source={gearSlug} />
         <p style={{ marginTop: 22, fontSize: 14 }}>
           <Link href={`/gear/${gearSlug}`} style={{ color: "var(--accent)", fontWeight: 600 }}>
             Shop Nebraska {schedule.sportLabel} gear →

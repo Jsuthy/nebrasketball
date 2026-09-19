@@ -6,6 +6,7 @@ import { SITE_URL } from "@/lib/constants";
 
 const ALL_LINKS = [
   { href: "/basketball", label: "Nebraska Basketball HQ — 2026-27 schedule & roster" },
+  { href: "/how-to-watch", label: "How to watch Nebraska — TV, time & streaming" },
   { href: "/volleyball", label: "Nebraska volleyball schedule 2026 — times & TV" },
   { href: "/volleyball/roster", label: "Nebraska volleyball roster 2026 — every player" },
   { href: "/volleyball/attendance", label: "Volleyball attendance records — the 92,003 book" },

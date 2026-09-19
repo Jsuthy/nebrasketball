@@ -1,7 +1,7 @@
 export const SITE_NAME = "Nebrasketball";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://nebrasketball.com";
 export const SITE_DESCRIPTION =
-  "Nebraska Cornhuskers schedules, live scores, rankings and how-to-watch — every sport, updated automatically.";
+  "Nebraska men's basketball next game, how to watch, live scores and season HQ — independent Husker fan site.";
 
 export const CATEGORIES = [
   {
@@ -229,9 +229,7 @@ export const SOURCES = [
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/basketball", label: "Basketball" },
+  { href: "/how-to-watch", label: "How to Watch" },
   { href: "/scores", label: "Scores" },
-  { href: "/volleyball", label: "Volleyball" },
-  { href: "/football", label: "Football" },
-  { href: "/gear", label: "All Gear" },
   { href: "/news", label: "News" },
 ] as const;

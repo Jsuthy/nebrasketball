@@ -161,7 +161,7 @@ export default function RosterPage() {
           </Link>
           .
         </p>
-        <EmailCapture />
+        <EmailCapture source="volleyball-roster" />
       </section>
 
       <RelatedLinks currentPath="/volleyball/roster" />

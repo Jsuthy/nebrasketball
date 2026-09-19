@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { GameWithResult } from "@/lib/schedule/types";
 
 // The one full-saturation scarlet moment on the page: a color-blocked
@@ -6,10 +7,12 @@ export default function NextGameCard({
   game,
   record,
   sportLabel,
+  watchHref,
 }: {
   game: GameWithResult;
   record: { wins: number; losses: number };
   sportLabel: string;
+  watchHref?: string;
 }) {
   const [year, month, day] = game.date.split("-").map(Number);
   const dateLabel = new Date(year, month - 1, day).toLocaleDateString("en-US", {
@@ -80,22 +83,43 @@ export default function NextGameCard({
           {game.time ? ` · ${game.time}` : " · Time TBA"} · {game.venue}, {game.city}
         </div>
       </div>
-      <div
-        style={{
-          fontFamily: "var(--font-display)",
-          fontWeight: 800,
-          fontSize: 16,
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          padding: "10px 20px",
-          background: "rgba(0,0,0,0.28)",
-          borderRadius: 4,
-          color: "#fff",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {game.tv ? `TV: ${game.tv}` : "TV: TBA"}
-      </div>
+      {watchHref ? (
+        <Link
+          href={watchHref}
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 800,
+            fontSize: 16,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            padding: "10px 20px",
+            background: "rgba(0,0,0,0.28)",
+            borderRadius: 4,
+            color: "#fff",
+            whiteSpace: "nowrap",
+            textDecoration: "none",
+          }}
+        >
+          {game.tv ? `How to watch · ${game.tv}` : "How to watch · TV TBA"}
+        </Link>
+      ) : (
+        <div
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 800,
+            fontSize: 16,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            padding: "10px 20px",
+            background: "rgba(0,0,0,0.28)",
+            borderRadius: 4,
+            color: "#fff",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {game.tv ? `TV: ${game.tv}` : "TV: TBA"}
+        </div>
+      )}
     </div>
   );
 }

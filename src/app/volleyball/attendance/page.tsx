@@ -245,7 +245,7 @@ export default function AttendancePage() {
 
       <section className="reveal" style={{ marginTop: 64, position: "relative", zIndex: 1 }}>
         <h2 style={sectionTitle}>Follow the Record Chase</h2>
-        <EmailCapture />
+        <EmailCapture source="volleyball-attendance" />
       </section>
 
       <RelatedLinks currentPath="/volleyball/attendance" />

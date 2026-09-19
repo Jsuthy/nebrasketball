@@ -100,6 +100,12 @@ export function getNextGame(): GameEntry | null {
   return getAllGames().find((g) => g.date >= today) ?? null;
 }
 
+/** The soonest upcoming game for one sport slug (e.g. "basketball"). */
+export function getNextGameForSport(sportSlug: string): GameEntry | null {
+  const today = todayCT();
+  return getAllGames().find((g) => g.sportSlug === sportSlug && g.date >= today) ?? null;
+}
+
 // --- Display helpers (dates parsed as local calendar dates, no TZ shift) ---
 
 /** e.g. "Saturday, October 10, 2026" */
@@ -161,7 +167,9 @@ export function watchSections(game: GameEntry): WatchSection[] {
       body:
         game.sportLabel === "Football"
           ? "The network for this game hasn't been assigned yet. Big Ten football games land on FOX, CBS, NBC, or BTN — often revealed 6–12 days out. Nebraska's TV channels update automatically on this page as soon as each assignment is announced."
-          : "The broadcast for this match hasn't been assigned yet. Most Nebraska volleyball matches air on Big Ten Network (BTN) or stream on B1G+. This page updates automatically the moment the TV home is set.",
+          : game.sportLabel === "Basketball"
+            ? "The broadcast for this game hasn't been assigned yet. Nebraska men's basketball airs across FOX, FS1, CBS, NBC/Peacock, and BTN, with some games on B1G+. This page updates automatically the moment the TV home is set."
+            : "The broadcast for this match hasn't been assigned yet. Most Nebraska volleyball matches air on Big Ten Network (BTN) or stream on B1G+. This page updates automatically the moment the TV home is set.",
     });
     sections.push({
       label: "How to stream when it's set",
