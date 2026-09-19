@@ -67,8 +67,9 @@ export default function HowToWatchHubPage() {
     ? todaysGames.find((g) => g.sportSlug === "basketball") ?? todaysGames[0]
     : featuredNext;
 
+  const todaySlugs = new Set(todaysGames.map((g) => g.slug));
   const upcoming = getAllGames()
-    .filter((g) => g.date >= today && !todaysGames.includes(g))
+    .filter((g) => g.date >= today && !todaySlugs.has(g.slug))
     .sort((a, b) => {
       const dateCmp = a.date.localeCompare(b.date);
       if (dateCmp !== 0) return dateCmp;
@@ -112,9 +113,12 @@ export default function HowToWatchHubPage() {
               {playingToday
                 ? todaysGames.map((g) => <GameCard key={g.slug} game={g} featured />)
                 : featuredNext && <GameCard game={featuredNext} featured />}
-              {upcoming.slice(0, 5).map((g) => (
-                <GameCard key={g.slug} game={g} />
-              ))}
+              {upcoming
+                .filter((g) => (playingToday ? true : g.slug !== featuredNext?.slug))
+                .slice(0, 5)
+                .map((g) => (
+                  <GameCard key={g.slug} game={g} />
+                ))}
             </div>
           </div>
 
